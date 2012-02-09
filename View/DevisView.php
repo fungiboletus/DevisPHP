@@ -2,11 +2,11 @@
 class DevisView {
 
 	public static function showSousCatSelect($categorie = array()) {
-		echo '<option value="">Pas de sous-catégorie</option>';
+		echo '<option value="-1">Pas de sous-catégorie</option>';
 
-			foreach ($categorie as $sc) {
+			foreach ($categorie as $id => $sc) {
 				$hsc = htmlspecialchars($sc);
-				echo "\n<option value=\"$hsc\">$hsc</option>";
+				echo "\n<option value=\"$id\">$hsc</option>";
 			}
 	}
 
@@ -23,12 +23,12 @@ class DevisView {
 			<select name="type" id="input_type" class="span4" autofocus required>
 END;
 			$first = null;
-			foreach ($categories as $c => $sous_cats) {
+			foreach ($categories as $id => $c) {
 				if ($first === null) {
-					$first = $sous_cats;
+					$first = $c[1];
 				}
-				$hc = htmlspecialchars($c);
-				echo "\t\t\t\t<option value=\"$hc\">$hc</option>\n";
+				$hc = htmlspecialchars($c[0]);
+				echo "\t\t\t\t<option value=\"$id\">$hc</option>\n";
 			}
 		echo <<<END
 			</select>

@@ -11,8 +11,8 @@ class Devis
 			$_REQUEST['AJAX_MODE'] = true;
 
 			DevisView::showSousCatSelect(
-				array_key_exists($_REQUEST['cat'], $cats) ?
-					$cats[$_REQUEST['cat']] : array());
+				isset($_REQUEST['cat'], $cats) ?
+					$cats[$_REQUEST['cat']][1] : array());
 		}
 		else
 		{
@@ -27,7 +27,8 @@ class Devis
 		if (CNavigation::isValidSubmit(array('type', 'sujet', 'nom','mail'), $_POST))
 		{
 			new CMessage('Owi');
-			CNavigation::redirectToApp('Devis', 'ok');
+			groaw($_POST);
+			//CNavigation::redirectToApp('Devis', 'ok');
 		}
 		else 
 		{

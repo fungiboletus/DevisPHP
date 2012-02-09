@@ -31,11 +31,11 @@ if (!defined('NO_HEADER_BAR'))
 	$c_user = $CTRL_NAME === 'User' ? ' class="active"' : '';
 
 	echo <<<END
-<div class="topbar">
-	<div class="topbar-inner">
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
 		<nav class="container">
 
-			<h3 id="topbar_logo"><a href="$url_root">Inspecteur Deryque</a></h3>
+			<a href="$url_root" class="brand">Devis PHP</a>
 END;
 
 	if (isset($_SESSION['logged'])) {
@@ -59,16 +59,17 @@ END;
 		</ul>
 		<ul class="nav right">	
 			<li class="dropdown">
-				<a href="#" class="dropdown-toggle icon_button user_text">$user_name</a>
-					<ul class="dropdown-menu">
-						<li><a href="$url_help">Aide</a></li>
-						<li><a href="$url_not_found">Une erreur 404</a></li>
-						<li><a href="$url_musique_deryque">Écouter la musique</a></li>
-						<li class="divider"></li>
-						<li><a href="$url_logout">Déconnexion</a></li>
-					</ul>
-				</li>
-			</ul>
+				<a href="#" class="dropdown-toggle icon_button user_text" data-toggle="dropdown">$user_name <b class="caret"></b></a>
+
+				<ul class="dropdown-menu">
+					<li><a href="$url_help">Aide</a></li>
+					<li><a href="$url_not_found">Une erreur 404</a></li>
+					<li><a href="$url_musique_deryque">Écouter la musique</a></li>
+					<li class="divider"></li>
+					<li><a href="$url_logout">Déconnexion</a></li>
+				</ul>
+			</li>
+		</ul>
 END;
 	}
 	echo <<<END

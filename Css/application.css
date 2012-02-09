@@ -26,7 +26,7 @@ font-size: 11px;
 width: 964px;
 }
 */
-.topbar .right {
+.navbar .right {
 float:right;
 }
 /*
@@ -226,7 +226,7 @@ left:auto;
 padding-left:30px;
 }
 
-.nav a.icon_button {
+.navbar .nav > li > a.icon_button {
 padding-left:40px;
 }
 .plus_text:before { content:url(../Img/icons/circle-plus.png); }
@@ -277,3 +277,11 @@ background:blue;
 border:3px solid green;
 -webkit-transform:rotate(72deg);
 }*/
+.alert .alert-img {
+margin-top:1.5em;
+text-align:center;
+}
+.alert .alert-img img {
+box-shadow:1px 1px 8px rgba(0,0,0,0.5);
+}
+

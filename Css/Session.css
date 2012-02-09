@@ -1,0 +1,29 @@
+#lien_inscription {
+position:absolute;
+z-index:70;
+top:0;
+left:0;
+background:url(../Img/coin.png) no-repeat bottom right;
+width:60px;
+height:60px;
+background-size:100% 100%;
+-webkit-transition: all 0.5s ease-in-out;
+-moz-transition: all 0.5s ease-in-out;
+-o-transition: all 0.5s ease-in-out;
+-ms-transition: all 0.5s ease-in-out;
+transition: all 0.5s ease-in-out;
+text-indent:-50em;
+}
+
+#lien_inscription:hover {
+	width:126px;
+	height:128px;
+}
+
+
+h1#titre_application {
+text-align:center;
+padding-bottom:1em;
+font-size:5em;
+}
+

@@ -18,13 +18,13 @@ class RegistrationView {
 	<div class="control-group">
 		<label for="input_eve">$label_mail</label>
 		<div class="controls">
-			<input name="mail" id="input_mail" type="email" />
+			<input name="mail" id="input_mail" type="email" required/>
 		</div>
 	</div>
 	<div class="control-group">
 		<label for="input_eve">$label_password</label>
 		<div class="controls">
-			<input name="password" id="input_password" type="password" />
+			<input name="password" id="input_password" type="password" required />
 		</div>
 	</div>
 	<div class="form-actions">

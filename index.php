@@ -24,7 +24,7 @@ date_default_timezone_set(TIME_ZONE);
 
 session_start();
 
-$CTRL_NAME = isset($_REQUEST['CTRL']) ? ($_REQUEST['CTRL'] != '' ? $_REQUEST['CTRL'] : 'Dashboard') : 'Dashboard';
+$CTRL_NAME = isset($_REQUEST['CTRL']) ? ($_REQUEST['CTRL'] != '' ? $_REQUEST['CTRL'] : 'Devis') : 'Devis';
 $ACTION_NAME = isset($_REQUEST['EX']) ? $_REQUEST['EX'] : 'index';
 
 // It's better to remove path special characters

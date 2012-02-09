@@ -10,22 +10,19 @@ class SessionView {
 		$url_registration = CNavigation::generateUrlToApp('Registration');
 
 		echo <<<END
-<h1 id="titre_application">Devis PHP</h1>
-
 <form action="$url_submit" name="login" method="post" class="form-horizontal well">
 <fieldset>
-	<legend>Se connecter à l'interface d'administration</legend>
 	<div class="control-group">
 		<label for="input_mail">$label_mail</label>
 		<div  class="controls">
-			<input name="email_deryque" id="input_mail" type="email"
+			<input name="email_devis" id="input_mail" type="email"
 				autofocus required />
 		</div>
 	</div>
 	<div class="control-group">
 		<label for="input_pass">$label_password</label>
 		<div  class="controls">
-			<input name="password_deryque" id="input_pass" type="password"
+			<input name="password_devis" id="input_pass" type="password"
 			required />
 		</div>
 	</div>

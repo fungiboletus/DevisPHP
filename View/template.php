@@ -39,7 +39,7 @@ if (!defined('NO_HEADER_BAR'))
 END;
 
 	if (isset($_SESSION['logged'])) {
-		$user_name = htmlspecialchars($_SESSION['name']);
+		$user_name = htmlspecialchars($_SESSION['user']->name);
 		$url_user = CNavigation::generateUrlToApp('User');
 		$url_logout = CNavigation::generateUrlToApp('Session', 'logout');
 		$url_help = CNavigation::generateUrlToApp('Help');

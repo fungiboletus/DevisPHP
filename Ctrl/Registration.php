@@ -28,15 +28,13 @@ class Registration
 			$user = R::dispense('user');
 			$user->name = $_POST['nom'];
 			$user->mail = $_POST['mail'];
-			$user->password = sha1($_POST['password'].'grossel');
+			$user->password = sha1($_POST['password'].'grossel_devis');
+			$user->isAdmin = false;
 
 			R::store($user);
 			
 			new CMessage('Inscription réussie');
 			$_SESSION['logged'] = true;
-			$_SESSION['name'] = $user->name;
-			$_SESSION['mail'] = $user->mail;
-			$_SESSION['bd_id'] = $user->getID();
 			$_SESSION['user'] = $user;
 			CNavigation::redirectToApp('Dashboard');
 		}

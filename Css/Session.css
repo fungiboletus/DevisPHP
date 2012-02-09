@@ -1,6 +1,6 @@
 #lien_inscription {
 position:absolute;
-z-index:70;
+z-index:10000;
 top:0;
 left:0;
 background:url(../Img/coin.png) no-repeat bottom right;

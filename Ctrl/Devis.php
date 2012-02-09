@@ -5,9 +5,21 @@ define('NO_LOGIN_REQUIRED', true);
 class Devis
 {
 	public function index() {
-		CNavigation::setTitle(_('Nouvelle demande de devis'));
+		if (isset($_REQUEST['cat']))
+		{
+			$cats = Categories::$liste;
+			$_REQUEST['AJAX_MODE'] = true;
 
-		DevisView::showForm();
+			DevisView::showSousCatSelect(
+				array_key_exists($_REQUEST['cat'], $cats) ?
+					$cats[$_REQUEST['cat']] : array());
+		}
+		else
+		{
+			CNavigation::setTitle(_('Nouvelle demande de devis'));
+
+			DevisView::showForm(Categories::$liste);
+		}
 	}
 
 	public function submit() {
@@ -17,7 +29,8 @@ class Devis
 			new CMessage('Owi');
 			CNavigation::redirectToApp('Devis', 'ok');
 		}
-		else {
+		else 
+		{
 			CTools::hackError();
 		}
 	}

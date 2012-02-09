@@ -1,6 +1,16 @@
 <?php
 class DevisView {
-	public static function showForm() {
+
+	public static function showSousCatSelect($categorie = array()) {
+		echo '<option value="">Pas de sous-catégorie</option>';
+
+			foreach ($categorie as $sc) {
+				$hsc = htmlspecialchars($sc);
+				echo "\n<option value=\"$hsc\">$hsc</option>";
+			}
+	}
+
+	public static function showForm($categories = array()) {
 	
 		$url_submit = CNavigation::generateUrlToApp('Devis', 'submit');
 		echo <<<END
@@ -11,18 +21,21 @@ class DevisView {
 		<label for="input_type">Catégorie</label>
 		<div class="controls">
 			<select name="type" id="input_type" class="span4" autofocus required>
-				<option>something</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
-				<option>5</option>
+END;
+			$first = null;
+			foreach ($categories as $c => $sous_cats) {
+				if ($first === null) {
+					$first = $sous_cats;
+				}
+				$hc = htmlspecialchars($c);
+				echo "\t\t\t\t<option value=\"$hc\">$hc</option>\n";
+			}
+		echo <<<END
 			</select>
-			<select name="subtype" id="input_subtype" class="span4" disabled>
-				<option>something</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
-				<option>5</option>
+			<select name="subtype" id="input_subtype" class="span4">
+END;
+		self::showSousCatSelect(is_null($first) ? array() : $first);
+		echo <<<END
 			</select>
 		</div>
 	</div>

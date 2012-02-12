@@ -18,7 +18,7 @@ class Devis
 		{
 			CNavigation::setTitle(_('Nouvelle demande de devis'));
 
-			DevisView::showForm(Categories::$liste);
+			DevisView::showForm(Categories::$liste, Regions::$liste);
 		}
 	}
 

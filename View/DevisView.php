@@ -10,7 +10,7 @@ class DevisView {
 			}
 	}
 
-	public static function showForm($categories = array()) {
+	public static function showForm($categories = array(), $regions = array()) {
 	
 		$url_submit = CNavigation::generateUrlToApp('Devis', 'submit');
 		echo <<<END
@@ -37,6 +37,7 @@ END;
 		self::showSousCatSelect(is_null($first) ? array() : $first);
 		echo <<<END
 			</select>
+				<p class="help-block">Sélectionnez une catégorie et une sous-catégorie pour améliorer la visibilité de votre demande de devis pour les professionnels.</p>
 		</div>
 	</div>
 	<div class="control-group">
@@ -74,11 +75,21 @@ END;
 		<label for="input_dep">Département</label>
 		<div class="controls">
 			<select name="dep" id="input_dep" class="span4">
-				<option>something</option>
-				<option>2</option>
-				<option>3</option>
-				<option>4</option>
-				<option>5</option>
+END;
+			foreach ($regions as $region => $departements) {
+				$hr = htmlspecialchars($region);
+				echo "\t\t\t\t<optgroup label=\"$hr\">\n";
+
+				foreach ($departements as $id => $dep) {
+					$hd = htmlspecialchars($dep);
+					$id_dep = $id === 201 ? '2A' : ($id === 202 ? '2B' : $id); 
+					$selected = $id === 75 ? ' selected' : '';
+					echo "\t\t\t\t\t<option value=\"$id\"$selected>$id_dep - $hd</option>\n";
+				}
+				echo "\t\t\t\t</optgroup>\n";
+
+			}
+		echo <<<END
 			</select>
 		</div>
 	</div>

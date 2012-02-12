@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><?php echo htmlspecialchars(CNavigation::getTitle()); ?> - Inspecteur Deryque</title>
+	<title><?php echo htmlspecialchars(CNavigation::getTitle()); ?> - Devis Équitable</title>
 <?php foreach (CHead::$css as $css)
 {
 	echo "\t<link href=\"$ROOT_PATH/Css/$css.css\" media=\"screen\" rel=\"Stylesheet\" type=\"text/css\" />\n";
@@ -35,7 +35,7 @@ if (!defined('NO_HEADER_BAR'))
 	<div class="navbar-inner">
 		<nav class="container">
 
-			<a href="$url_root" class="brand">Devis PHP</a>
+			<a href="$url_root" class="brand">Devis Équitable</a>
 END;
 
 	if (isset($_SESSION['logged'])) {

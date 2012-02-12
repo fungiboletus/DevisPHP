@@ -18,9 +18,21 @@ class DevisView {
 <fieldset>
 	<legend>Votre devis</legend>
 	<div class="control-group">
+		<label for="input_sujet">Sujet</label>
+		<div class="controls">
+			<input name="sujet" id="input_sujet" type="text" autofocus class="span6"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label for="input_description">Description</label>
+		<div class="controls">
+			<textarea name="description" id="input_description" class="span6" rows="5"></textarea>
+		</div>
+	</div>
+	<div class="control-group">
 		<label for="input_type">Catégorie</label>
 		<div class="controls">
-			<select name="type" id="input_type" class="span4" autofocus required>
+			<select name="type" id="input_type" class="span4" required>
 END;
 			$first = null;
 			foreach ($categories as $id => $c) {
@@ -40,18 +52,23 @@ END;
 				<p class="help-block">Sélectionnez une catégorie et une sous-catégorie pour améliorer la visibilité de votre demande de devis pour les professionnels.</p>
 		</div>
 	</div>
+</fieldset>
+<fieldset>
+	<legend>Titre à trouver</legend>
 	<div class="control-group">
-		<label for="input_sujet">Sujet</label>
+		<label for="input_delai">Délai prévu</label>
 		<div class="controls">
-			<input name="sujet" id="input_sujet" type="text" required class="span6"/>
+			<select name="delai" id="input_delai" class="span4">
+				<option value="-1">Pas de date fixée</option>
+				<option value="0">Au plus vite</option>
+				<option value="1">Dans moins d'un mois</option>
+				<option value="2">Dans moins de deux mois</option>
+				<option value="3">Dans moins de six mois</option>
+				<option value="4">Dans l'année</option>
+			</select>
 		</div>
 	</div>
-	<div class="control-group">
-		<label for="input_description">Description</label>
-		<div class="controls">
-			<textarea name="description" id="input_description" class="span6" rows="5"></textarea>
-		</div>
-	</div>
+	
 	<div class="control-group">
 		<label for="input_budget">Budget</label>
 		<div class="controls">
@@ -62,6 +79,31 @@ END;
               </div>
 		</div>
 	</div>
+	
+	<div class="control-group">
+		<label for="input_financement">Financement</label>
+		<div class="controls">
+			<select name="financement" id="input_financement" class="span4">
+				<option value="-1">Non spécifié</option>
+				<option value="0">Comptant</option>
+				<option value="1">Demande de crédit en cours</option>
+				<option value="2">Crédit obtenu</option>
+				<option value="3">Je ne sais pas</option>
+			</select>
+		</div>
+	</div>
+	
+	<div class="control-group">
+		<label for="input_objectif">Objectif de la demande</label>
+		<div class="controls">
+			<select name="objectif" id="input_objectif" class="span4">
+				<option value="-1">Trouver une entreprise disponible</option>
+				<option value="0">Obtenir des devis et trouver une entreprise</option>
+				<option value="1">Avoir juste une idée de prix</option>
+			</select>
+		</div>
+	</div>
+
 </fieldset>
 <fieldset>
 	<legend>Coordonées</legend>
@@ -69,6 +111,12 @@ END;
 		<label for="input_nom">Nom et Prénom</label>
 		<div class="controls">
 			<input name="nom" id="input_nom" type="text" required class="span4"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label for="input_cp">Code postal</label>
+		<div class="controls">
+			<input name="cp" id="input_cp" type="text" class="span1"/>
 		</div>
 	</div>
 	<div class="control-group">

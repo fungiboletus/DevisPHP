@@ -14,10 +14,10 @@ $(document).ready(function() {
 		var value = $(this).attr('value');
 
 		if (value.length >= 2) {
-			value = value.slice(0,2);
+			value = parseInt(value.slice(0,2));
 
 			$('#input_dep option').each(function() {
-				if ($(this).attr('value').slice(0,2) == value) {
+				if (parseInt($(this).attr('value').slice(0,2)) == value) {
 					$(this).attr('selected',true);
 					return false; // break
 				}

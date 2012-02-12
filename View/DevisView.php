@@ -130,7 +130,7 @@ END;
 
 				foreach ($departements as $id => $dep) {
 					$hd = htmlspecialchars($dep);
-					$id_dep = $id === 201 ? '2A' : ($id === 202 ? '2B' : $id); 
+					$id_dep = $id === 201 ? '2A' : ($id === 202 ? '2B' : ($id < 10 ? '0'.$id : $id)); 
 					$selected = $id === 75 ? ' selected' : '';
 					echo "\t\t\t\t\t<option value=\"$id\"$selected>$id_dep - $hd</option>\n";
 				}

@@ -13,21 +13,6 @@ class DevisView {
 
 	public static function showForm($values) {
 
-		$values = array_merge(array(
-			'sujet' => '',
-			'description' => '',
-			'type' => '',
-			'subtype' => '',
-			'delai' => '',
-			'financement' => '',
-			'budget' => '',
-			'objectif' => '',
-			'nom' => '',
-			'cp' => '',
-			'dep' => '',
-			'mail' => '',
-			'tel' => ''), $values);
-
 		$values = array_map('htmlspecialchars', $values); // <3
 
 		$url_submit = CNavigation::generateUrlToApp('Devis', 'submit');
@@ -172,15 +157,19 @@ END;
 				echo "\t\t\t\t</optgroup>\n";
 
 			}
+
+			$class_error = isset($_SESSION['mail_error']) ? ' error' : '';
+			$msg_error = isset($_SESSION['mail_error']) ? 'Veuillez entrer une adresse email valide. Elle sera utilisée pour vous proposer les offres de devis.' : '';
+			$autofocus_error = isset($_SESSION['mail_error']) ? ' autofocus' : 'L\'adresse email sera utilisée pour vous proposer les offres de devis.';
 		echo <<<END
 			</select>
 		</div>
 	</div>
-	<div class="control-group">
+	<div class="control-group$class_error">
 		<label for="input_mail">Adresse email</label>
 		<div class="controls">
-			<input name="mail" id="input_mail" type="email" required class="span4" value="{$values['mail']}"/>
-			<p class="help-block">L'adresse email sera utilisée pour vous proposer les offres de devis.</p>
+			<input name="mail" id="input_mail" type="email" required class="span4" value="{$values['mail']}"$autofocus_error/>
+			<p class="help-block">$msg_error</p>
 		</div>
 	</div>
 	<div class="control-group">
@@ -195,6 +184,12 @@ END;
 		<input type="submit" class="btn btn-large btn-primary" value="Envoyer le devis" />
 	</div>
 </form>	
+END;
+	}
+
+	public static function showBoutonNouveauDevis() {
+	echo <<<END
+	<a href="" class="btn btn-primary btn-large">Nouvelle demande de devis</a>
 END;
 	}
 }

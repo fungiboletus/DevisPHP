@@ -10,7 +10,7 @@ $(document).ready(function() {
 		}});
 	});
 
-	$('#input_cp').keyup(function() {
+	var input_cp_event = function() {
 		var value = $(this).attr('value');
 
 		if (value.length >= 2) {
@@ -23,5 +23,9 @@ $(document).ready(function() {
 				}
 			});
 		}
-	});
+	};
+	
+	$('#input_cp').change(input_cp_event);
+	$('#input_cp').keyup(input_cp_event);
+
 });

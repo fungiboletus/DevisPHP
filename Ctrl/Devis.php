@@ -39,6 +39,14 @@ class Devis
 		}
 	}
 
+	public function view() {
+		if (isset($_REQUEST['id'])) {
+			$devis = R::load('devis', $_REQUEST['id']);
+			//groaw($devis->getProperties());
+			DevisView::showForm($devis->getProperties());
+		}
+	}
+
 	public function submit() {
 		
 		if (CNavigation::isValidSubmit(array('type', 'sujet', 'nom','mail'), $_POST))
@@ -97,6 +105,11 @@ class Devis
 		unset($_SESSION['enregistrement_ok']);
 		CNavigation::setTitle(_('Enregistrement réussi'));
 		DevisView::showBoutonNouveauDevis();
+	}
+
+	public function liste() {
+		CNavigation::setTitle(_('Liste des devis'));
+		DevisView::showList(R::find('devis'));
 	}
 }
 ?>

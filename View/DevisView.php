@@ -192,5 +192,38 @@ END;
 	<a href="" class="btn btn-primary btn-large">Nouvelle demande de devis</a>
 END;
 	}
+	
+	public static function showList($devis)
+	{
+		if ($devis)
+		{
+			CHead::addJS('jquery.tablesorter.min');
+			echo <<<END
+			<table class="table table-striped table-bordered">
+				<thead><tr>
+					<th class="header yellow">Sujet</th>
+					<th class="header green">Mail</th>
+					<th class="header blue">Nom</th>
+				</tr></thead>
+				<tbody>
+END;
+			foreach ($devis as $d) {
+				$url = CNavigation::generateUrlToApp('Devis', 'view', array('id' => $d->getID()));
+				echo "\t<tr><td><a href=\"$url\">", htmlspecialchars($d['sujet']),
+					 "</a></td><td><a href=\"$url\">", htmlspecialchars($d['mail']),
+					 "</a></td><td><a href=\"$url\">", htmlspecialchars($d['nom']), "</a></td></tr>\n";
+			}
+
+			echo "</tbody></table>";
+		}
+		else
+		{
+			echo <<<END
+<div class="alert-message block-message warning">
+<p>Il n'y a aucun devis pour l'instant.</p>
+</div>
+END;
+		}
+	}
 }
 ?>

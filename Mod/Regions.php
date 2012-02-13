@@ -128,8 +128,14 @@ class Regions {
 		94 => 'Val-de-Marne')
 	);
 	
-	public static function validerID(&$id) {
-		$id = $id < 0 ? -1 : ($id >= count(self::$liste) ? -1 : intval($id));
+	public static function validerID($id) {
+		$id = intval($id);	
+		foreach (self::$liste as $region => $departements)
+			foreach ($departements as $id_dep => $dep)
+				if ($id_dep === $id)
+					return $id;
+		// Paris par défaut (c'est la capitale, c'est tout…)
+		return 75;
 	}
 }
 ?>

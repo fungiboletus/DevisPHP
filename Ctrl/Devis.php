@@ -39,27 +39,45 @@ class Devis
 		}
 	}
 
-	public function view() {
-		if (isset($_REQUEST['id'])) {
-			$devis = R::load('devis', $_REQUEST['id']);
-			//groaw($devis->getProperties());
-			DevisView::showForm($devis->getProperties());
-		}
-	}
-
 	public function submit() {
-		
+	
 		if (CNavigation::isValidSubmit(array('type', 'sujet', 'nom','mail'), $_POST))
 		{
 			$values = array_merge(self::$variables, $_POST);
 			
-			if (!filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL)) {
+			if (!filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL))
+			{
 				new CMessage(_('Une adresse mail correcte est demandée'), 'error');
 				$_SESSION['devis_submit'] = $values;
 				$_SESSION['mail_error'] = true;
 				CNavigation::redirectToApp('Devis');
 			}
-			$devis = R::dispense('devis');
+
+			$devis = null;
+
+			if (isset($_SESSION['logged']) && $_SESSION['user']->isAdmin && isset($values['devis_id']))
+			{
+				$devis = R::load('devis', intval($values['devis_id']));
+				if ($devis && isset($values['submit'])) {
+					switch ($values['submit']) {
+					case 'Supprimer':
+						$devis->etape = -1;
+						break;
+					case 'Valider':
+						$devis->etape = 1;
+						break;
+					default:
+						$devis->etape = 0;
+					}
+				}
+			}
+
+			if (!$devis)
+			{
+				$devis = R::dispense('devis');
+				$devis->etape = 0;
+			}
+
 			$devis->sujet = $values['sujet'];
 			$devis->description = $values['description'];
 			$type = $values['type'];
@@ -90,7 +108,7 @@ class Devis
 				'mail' => $values['mail'],
 				'tel' => $values['tel']));
 
-			CNavigation::redirectToApp('Devis', 'ok');
+			//CNavigation::redirectToApp('Devis', 'ok');
 		}
 		else 
 		{
@@ -107,9 +125,5 @@ class Devis
 		DevisView::showBoutonNouveauDevis();
 	}
 
-	public function liste() {
-		CNavigation::setTitle(_('Liste des devis'));
-		DevisView::showList(R::find('devis'));
-	}
 }
 ?>

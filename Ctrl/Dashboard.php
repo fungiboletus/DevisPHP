@@ -4,15 +4,28 @@ class Dashboard
 {
 	public function index() {
 		CNavigation::setTitle('Tableau de bord');
-		
+		groaw($_SESSION);	
 	}
 	
 	public function view() {
 		CNavigation::setTitle(_('Visualisation d\'une demande de devis'));
 		if (isset($_REQUEST['id'])) {
 			$devis = R::load('devis', $_REQUEST['id']);
-			//groaw($devis->getProperties());
-			DevisView::showForm($devis->getProperties(), $devis->getID(), true);
+			if (!$devis->getId()) CTools::hackError();
+
+			$admin = $_SESSION['user']->isAdmin;
+
+			if ($admin || false) {
+				DevisView::showForm($devis->getProperties(),
+					$admin ? 'admin' : 'artisan',
+					$devis->getID(),
+					!$admin,
+					$devis->etape);
+			}
+			else
+			{
+				groaw($devis);
+			}
 		}
 		else
 		{
@@ -21,8 +34,37 @@ class Dashboard
 	}
 
 	public function liste() {
-		CNavigation::setTitle(_('Liste des demandes'));
-		DevisView::showList(R::find('devis', 'etape = 0'));
+		if ($_SESSION['user']->isAdmin) {
+			switch (isset($_REQUEST['etape']) ? $_REQUEST['etape'] : null) {
+				case 'validees':
+					CNavigation::setTitle(_('Liste des demandes validées'));
+					$etape = '= 1';
+					break;
+				case 'poubelle':
+					CNavigation::setTitle(_('Poubelle'));
+					CNavigation::setDescription('Pas encore vraiment implémenté');
+					$etape = '= -1';
+					break;
+				case 'historique':
+					CNavigation::setTitle(_('Historique'));
+					CNavigation::setDescription('Pas encore vraiment implémenté');
+					$etape = '< -1';
+					break;
+				case 'validation':
+				default:
+					CNavigation::setTitle(_('Liste des demandes à valider'));
+					$etape = '= 0';
+					break;
+			}
+
+			DevisView::showChoixListe($etape);
+		}
+		else
+		{
+			CNavigation::setTitle(_('Liste des demandes'));
+			$etape = '= 1';
+		}
+		DevisView::showList(R::find('devis', 'etape '.$etape));
 	}
 }
 

@@ -11,7 +11,7 @@ class DevisView {
 			}
 	}
 
-	public static function showForm($values, $devis_id = null, $adisabled = false) {
+	public static function showForm($values, $mode = 'nouveau', $devis_id = null, $adisabled = false, $valider = 0) {
 
 		$values = array_map('htmlspecialchars', $values); // <3
 
@@ -28,19 +28,19 @@ class DevisView {
 <fieldset>
 	<legend>Demande</legend>
 	<div class="control-group">
-		<label for="input_sujet">Sujet</label>
+		<label for="input_sujet" class="control-label">Sujet</label>
 		<div class="controls">
 			<input name="sujet" id="input_sujet" type="text" autofocus class="span6" value="{$values['sujet']}" maxlength="80"$disabled/>
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_description">Description</label>
+		<label for="input_description" class="control-label">Description</label>
 		<div class="controls">
 			<textarea name="description" id="input_description" class="span6" rows="5"$disabled>{$values['description']}</textarea>
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_type">Catégorie</label>
+		<label for="input_type" class="control-label">Catégorie</label>
 		<div class="controls">
 END;
 			$selected_id = $values['type'];
@@ -81,7 +81,7 @@ END;
 <fieldset>
 	<legend>Informations ?</legend>
 	<div class="control-group">
-		<label for="input_delai">Délai prévu</label>
+		<label for="input_delai" class="control-label">Délai prévu</label>
 		<div class="controls">
 END;
 		$id_delai = Delais::validerID($values['delai']);
@@ -105,7 +105,7 @@ END;
 	</div>
 	
 	<div class="control-group">
-		<label for="input_budget">Budget</label>
+		<label for="input_budget" class="control-label">Budget</label>
 		<div class="controls">
 			<div class="input-prepend">
                 <span class="add-on">€</span>
@@ -122,7 +122,7 @@ END;
 	</div>
 	
 	<div class="control-group">
-		<label for="input_financement">Financement</label>
+		<label for="input_financement" class="control-label">Financement</label>
 		<div class="controls">
 END;
 		$id_financement = Financements::validerID($values['financement']);
@@ -146,7 +146,7 @@ END;
 	</div>
 	
 	<div class="control-group">
-		<label for="input_objectif">Objectif de la demande</label>
+		<label for="input_objectif" class="control-label">Objectif de la demande</label>
 		<div class="controls">
 END;
 		$id_objectif = Objectifs::validerID($values['objectif']);
@@ -174,19 +174,19 @@ END;
 <fieldset>
 	<legend>Coordonées</legend>
 	<div class="control-group">
-		<label for="input_nom">Nom et Prénom</label>
+		<label for="input_nom" class="control-label">Nom et Prénom</label>
 		<div class="controls">
 			<input name="nom" id="input_nom" type="text" required class="span4" value="{$values['nom']}" maxlength="80"$disabled/>
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_cp">Code postal</label>
+		<label for="input_cp" class="control-label">Code postal</label>
 		<div class="controls">
 			<input name="cp" id="input_cp" type="text" class="span1" value="{$values['cp']}"$disabled/>
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_dep">Département</label>
+		<label for="input_dep" class="control-label">Département</label>
 		<div class="controls">
 END;
 			$id_dep = Regions::validerID($values['dep']);
@@ -220,14 +220,14 @@ END;
 		</div>
 	</div>
 	<div class="control-group$class_error">
-		<label for="input_mail">Adresse email</label>
+		<label for="input_mail" class="control-label">Adresse email</label>
 		<div class="controls">
 			<input name="mail" id="input_mail" type="email" required class="span4" value="{$values['mail']}"$autofocus_error maxlength="80"$disabled/>
 			<p class="help-block">$msg_error</p>
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_tel">Téléphone</label>
+		<label for="input_tel" class="control-label">Téléphone</label>
 		<div class="controls">
 			<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80"$disabled/>
 		</div>
@@ -235,14 +235,36 @@ END;
 
 </fieldset>
 	<div class="form-actions">
-		<a href="#" class="btn btn-large">Retour à la liste</a>
-		<input type="submit" class="btn btn-large btn-primary" name="submit" value="Enregistrer" />
-		<input type="submit" class="btn btn-large btn-danger" name="submit" value="Supprimer" />
-		<input type="submit" class="btn btn-large btn-success" name="submit" value="Valider" />
-		<input type="submit" class="btn btn-large btn-warning" name="submit" value="Acheter" />
-	</div>
-</form>	
 END;
+	if ($mode !== 'nouveau')
+			echo "\t\t", '<a href="',CNavigation::generateUrlToApp('Dashboard', 'liste'),'" class="btn btn-large">Retour à la liste</a>', "\n";
+
+	switch ($mode)
+	{
+		case 'nouveau':
+			echo "\t\t", '<input type="submit" class="btn btn-large btn-primary" name="submit" value="Enregistrer" />', "\n";
+			break;
+
+		case 'artisan':
+			echo "\t\t", '<input type="submit" class="btn btn-large btn-warning" name="submit" value="Acheter" />', "\n";
+			break;
+
+		case 'admin':
+			if ($valider == 0)
+			{
+				echo "\t\t", '<input type="submit" class="btn btn-large btn-success" name="submit" value="Valider" />', "\n";
+				echo "\t\t", '<input type="submit" class="btn btn-large btn-danger" name="submit" value="Supprimer" />', "\n";
+			}
+			else if ($valider == 1)
+			{
+				echo "\t\t", '<input type="submit" class="btn btn-large btn-warning" name="submit" value="Invalider" />', "\n";
+			}
+
+			echo "\t\t", '<input type="submit" class="btn btn-large btn-primary" name="submit" value="Enregistrer" />', "\n";
+			break;
+
+		}
+	echo "\t</div>\n</form>\n";
 	}
 
 	public static function showBoutonNouveauDevis() {
@@ -278,10 +300,37 @@ END;
 		{
 			echo <<<END
 <div class="alert-message block-message warning">
-<p>Il n'y a aucun devis pour l'instant.</p>
+<p>Il n'y a aucune demande de devis pour l'instant.</p>
 </div>
 END;
 		}
+	}
+
+	public static function showChoixListe($etape) {
+
+		echo "<div class=\"well\">\n\t";
+
+		echo '<a href="',
+			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'validees')),
+			'" class="btn btn-large btn-inverse"',$etape === '= 1' ? 'disabled': '',
+			'><i class="icon-white icon-ok"></i> Validés</a>', "\n\t";
+		
+		echo '<a href="',
+			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'validation')),
+			'" class="btn btn-large btn-inverse"',$etape === '= 0' ? 'disabled': '',
+			'><i class="icon-white icon-inbox"></i> À valider</a>', "\n\t";
+		
+		echo '<a href="',
+			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'historique')),
+			'" class="btn btn-large btn-inverse"',$etape === '< -1' ? 'disabled': '',
+			'><i class="icon-white icon-list-alt"></i> Historique</a>', "\n\t";
+		
+		echo '<a href="',
+			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'poubelle')),
+			'" class="btn btn-large btn-inverse"',$etape === '= -1' ? 'disabled': '',
+			'><i class="icon-white icon-trash"></i> Poubelle</a>', "\n\t";
+		
+		echo "</div>\n";
 	}
 }
 ?>

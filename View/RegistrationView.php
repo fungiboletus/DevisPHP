@@ -10,19 +10,19 @@ class RegistrationView {
 <form action="$url_submit" name="registration_form" method="post" class="form-horizontal">
 <fieldset>
 	<div class="control-group">
-		<label for="input_nom">$label_name</label>
+		<label for="input_nom" class="control-label">$label_name</label>
 		<div class="controls">
 			<input name="nom" id="input_nom" type="text" autofocus required />
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_eve">$label_mail</label>
+		<label for="input_mail" class="control-label">$label_mail</label>
 		<div class="controls">
 			<input name="mail" id="input_mail" type="email" required/>
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_eve">$label_password</label>
+		<label for="input_password" class="control-label">$label_password</label>
 		<div class="controls">
 			<input name="password" id="input_password" type="password" required />
 		</div>

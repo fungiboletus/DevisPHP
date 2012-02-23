@@ -13,14 +13,14 @@ class SessionView {
 <form action="$url_submit" name="login" method="post" class="form-horizontal well">
 <fieldset>
 	<div class="control-group">
-		<label for="input_mail">$label_mail</label>
+		<label for="input_mail" class="control-label">$label_mail</label>
 		<div  class="controls">
 			<input name="email_devis" id="input_mail" type="email"
 				autofocus required />
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_pass">$label_password</label>
+		<label for="input_pass" class="control-label">$label_password</label>
 		<div  class="controls">
 			<input name="password_devis" id="input_pass" type="password"
 			required />

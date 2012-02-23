@@ -8,7 +8,7 @@ class Categories {
 	// Si vous voulez ajouter des nouveaux éléments, ajoutez les toujours
 	// en fin de liste
 	public static $liste = array(
-		array('Pas de catégorie', array()),
+		array('Pas de catégorie', array('Pas de sous catégorie')),
 		array('Construction Bati – bois', array(
 			'Construction bois',
 			'Construction garage',

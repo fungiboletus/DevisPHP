@@ -41,6 +41,48 @@ class Devis
 
 	public function submit() {
 	
+		$devis = null;
+		$modification = false;
+		$etape_nouveau_devis = 0;
+		
+		if (isset($_SESSION['logged']) && isset($_POST['devis_id']))
+		{
+			$devis = R::load('devis', intval($_POST['devis_id']));
+			if ($devis && isset($_POST['submit'])) {
+				if ($_SESSION['user']->isAdmin) {
+					switch ($_POST['submit']) {
+					case 'Supprimer':
+						$devis->etape = -1;
+						R::store($devis);
+						new CMessage('La demande de devis a été supprimée');
+						break;
+					case 'Valider':
+						$devis->etape = 1;
+						R::store($devis);
+						new CMessage('La demande de devis a été validée');
+						break;
+					case 'Invalider':
+						$devis->etape = 0;
+						R::store($devis);
+						new CMessage('La demande de devis a été invalidée');
+						break;
+					case 'Enregistrer':
+						// On sauvegarde l'ancien devis
+						$etape_nouveau_devis = $devis->etape;
+						$devis->etape = -2;
+						R::store($devis);
+						$modification = true;
+						break;
+					default:
+						CTools::hackError();
+					}
+
+					if ($_POST['submit'] !== 'Enregistrer')
+						CNavigation::redirectToApp('Dashboard', 'liste');
+				}
+			}
+		}
+
 		if (CNavigation::isValidSubmit(array('type', 'sujet', 'nom','mail'), $_POST))
 		{
 			$values = array_merge(self::$variables, $_POST);
@@ -53,30 +95,8 @@ class Devis
 				CNavigation::redirectToApp('Devis');
 			}
 
-			$devis = null;
-
-			if (isset($_SESSION['logged']) && $_SESSION['user']->isAdmin && isset($values['devis_id']))
-			{
-				$devis = R::load('devis', intval($values['devis_id']));
-				if ($devis && isset($values['submit'])) {
-					switch ($values['submit']) {
-					case 'Supprimer':
-						$devis->etape = -1;
-						break;
-					case 'Valider':
-						$devis->etape = 1;
-						break;
-					default:
-						$devis->etape = 0;
-					}
-				}
-			}
-
-			if (!$devis)
-			{
-				$devis = R::dispense('devis');
-				$devis->etape = 0;
-			}
+			$devis = R::dispense('devis');
+			$devis->etape = $etape_nouveau_devis;
 
 			$devis->sujet = $values['sujet'];
 			$devis->description = $values['description'];
@@ -94,21 +114,32 @@ class Devis
 			$devis->dep = Regions::validerID($values['dep']);
 			$devis->mail = $values['mail'];
 			$devis->tel = $values['tel'];
+			$devis->date_creation = time();
 
 			R::store($devis);
-			//TODO trouver un meilleur message
-			new CMessage('Votre demande de devis a été enregistrée. Vous serez informé de l\'évolution des hostilités.');
-			$_SESSION['enregistrement_ok'] = true;
-			
-			// On enregistre les variables de contacts pour les devis suivants (héhé)
-			$_SESSION['devis_submit'] = array_merge(self::$variables, array(
-				'nom' => $values['nom'],
-				'cp' => $values['cp'],
-				'dep' => $values['dep'],
-				'mail' => $values['mail'],
-				'tel' => $values['tel']));
 
-			//CNavigation::redirectToApp('Devis', 'ok');
+			if ($modification) {
+				new CMessage('Le devis a correctement été mis à jour');
+				CNavigation::redirectToApp('Dashboard', 'view', array('id' => $devis->getId()));
+			}
+			else
+			{
+				//TODO trouver un meilleur message
+				new CMessage('Votre demande de devis a été enregistrée. Vous serez informé de l\'évolution des hostilités.');
+			
+				$_SESSION['enregistrement_ok'] = true;
+				
+				// On enregistre les variables de contacts pour les devis suivants (héhé)
+				$_SESSION['devis_submit'] = array_merge(self::$variables, array(
+					'nom' => $values['nom'],
+					'cp' => $values['cp'],
+					'dep' => $values['dep'],
+					'mail' => $values['mail'],
+					'tel' => $values['tel']));
+
+				CNavigation::redirectToApp('Devis', 'ok');
+			}
+
 		}
 		else 
 		{

@@ -285,3 +285,6 @@ text-align:center;
 box-shadow:1px 1px 8px rgba(0,0,0,0.25);
 }
 
+.btn-large [class^="icon-"] {
+margin-top: 3px;
+}

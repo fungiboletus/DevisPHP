@@ -223,6 +223,14 @@ END;
 		<label for="input_mail" class="control-label">Adresse email</label>
 		<div class="controls">
 			<input name="mail" id="input_mail" type="email" required class="span4" value="{$values['mail']}"$autofocus_error maxlength="80"$disabled/>
+END;
+		if (isset($_SESSION['logged']) && strlen($values['mail']) > 0)
+		{
+			echo "\t\t\t<a href=\"mailto:",
+			htmlspecialchars($values['nom']),
+			rawurlencode(' <'.$values['mail'].'>'),"\" class=\"btn btn-inverse\">Envoyer un email</a>\n";
+		}
+		echo <<<END
 			<p class="help-block">$msg_error</p>
 		</div>
 	</div>
@@ -279,19 +287,25 @@ END;
 		{
 			CHead::addJS('jquery.tablesorter.min');
 			echo <<<END
-			<table class="table table-striped table-bordered">
+			<table class="table table-striped table-bordered devis_list">
 				<thead><tr>
-					<th class="header yellow">Sujet</th>
-					<th class="header green">Mail</th>
-					<th class="header blue">Nom</th>
+					<th class="header yellow">Code postal</th>
+					<th class="header green">Catégorie</th>
+					<th class="header blue">Sujet</th>
+					<th class="header purple">Budget</th>
 				</tr></thead>
 				<tbody>
 END;
 			foreach ($devis as $d) {
 				$url = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $d->getID()));
-				echo "\t<tr><td><a href=\"$url\">", wordwrap(htmlspecialchars($d['sujet']),60,"<br/>",true),
-					 "</a></td><td><a href=\"$url\">", htmlspecialchars($d['mail']),
-					 "</a></td><td><a href=\"$url\">", htmlspecialchars($d['nom']), "</a></td></tr>\n";
+				$c = Categories::$liste[$d['type']];
+				$sc = $c[1][$d['subtype']];
+				echo "\t<tr><td><a href=\"$url\">", htmlspecialchars($d['cp']),
+					 "</a></td><td><a href=\"$url\">", htmlspecialchars($c[0]),
+					 ' - ', htmlspecialchars($sc),
+					 "</a></td><td><a href=\"$url\">", wordwrap(htmlspecialchars($d['sujet']),60, "<br/>", true),
+					 "</a></td><td><a href=\"$url\">", htmlspecialchars($d['budget']),
+					 "</a></td></tr>\n";
 			}
 
 			echo "</tbody></table>";
@@ -308,29 +322,61 @@ END;
 
 	public static function showChoixListe($etape) {
 
-		echo "<div class=\"well\">\n\t";
-
 		echo '<a href="',
-			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'validees')),
+			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'validees')),
 			'" class="btn btn-large btn-inverse"',$etape === '= 1' ? 'disabled': '',
 			'><i class="icon-white icon-ok"></i> Validés</a>', "\n\t";
 		
 		echo '<a href="',
-			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'validation')),
+			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'validation')),
 			'" class="btn btn-large btn-inverse"',$etape === '= 0' ? 'disabled': '',
 			'><i class="icon-white icon-inbox"></i> À valider</a>', "\n\t";
 		
 		echo '<a href="',
-			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'historique')),
+			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'historique')),
 			'" class="btn btn-large btn-inverse"',$etape === '< -1' ? 'disabled': '',
 			'><i class="icon-white icon-list-alt"></i> Historique</a>', "\n\t";
 		
 		echo '<a href="',
-			CNavigation::generateUrlToApp('Dashboard', 'liste', array('etape' => 'poubelle')),
+			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'poubelle')),
 			'" class="btn btn-large btn-inverse"',$etape === '= -1' ? 'disabled': '',
 			'><i class="icon-white icon-trash"></i> Poubelle</a>', "\n\t";
-		
-		echo "</div>\n";
+	}
+
+	public static function showFormSelectionList() {
+	echo <<<END
+<form action="#" name="selection_categories" method="get" class="form-horizontal">
+<fieldset>
+	<div class="control-group">
+		<label for="input_type" class="control-label">Catégorie</label>
+		<div class="controls">
+END;
+			$selected_id = $_REQUEST['type'];
+			$sub_selected_id = $_REQUEST['subtype'];
+			Categories::validerIDs($selected_id, $sub_selected_id);
+			
+			echo "\t\t\t<select name=\"type\" id=\"input_type\" class=\"span4\" required>\n";
+			$first = null;
+
+			foreach (Categories::$liste as $id => $c) {
+				$selected = '';
+				if ($id === $selected_id) {
+					$selected = ' selected';
+					$first = $c[1];
+				}
+				$hc = htmlspecialchars($c[0]);
+				echo "\t\t\t\t<option value=\"$id\"$selected>$hc</option>\n";
+			}
+			echo "\t\t\t</select>\n";
+			
+			echo "\t\t\t<select name=\"subtype\" id=\"input_subtype\" class=\"span4\">\n";
+			self::showSousCatSelect(is_null($first) ? array() : $first, $sub_selected_id);
+			echo "\t\t\t</select>\n";
+		echo <<<END
+		</div>
+	</div>
+</fieldset>
+END;
 	}
 }
 ?>

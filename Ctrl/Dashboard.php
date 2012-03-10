@@ -34,6 +34,8 @@ class Dashboard
 	}
 
 	public function liste() {
+		echo "<div class=\"well\">\n\t";
+
 		if ($_SESSION['user']->isAdmin) {
 			switch (isset($_REQUEST['etape']) ? $_REQUEST['etape'] : null) {
 				case 'validees':
@@ -64,7 +66,24 @@ class Dashboard
 			CNavigation::setTitle(_('Liste des demandes'));
 			$etape = '= 1';
 		}
-		DevisView::showList(R::find('devis', 'etape '.$etape));
+
+
+		$query = 'etape '.$etape;
+		
+		if (isset($_REQUEST['type']) && isset($_REQUEST['subtype']))
+		{
+			$type = $_REQUEST['type'];
+			$subtype = $_REQUEST['subtype'];
+
+			Categories::validerIDs($type, $subtype);
+
+			if ($_REQUEST['type'] !== '*') $query .= " and type = $type";
+			if ($_REQUEST['subtype'] !== '*') $query .= " and subtype = $subtype";
+			DevisView::showFormSelectionList();
+		}
+
+		echo "</div>\n";
+		DevisView::showList(R::find('devis', $query));
 	}
 }
 

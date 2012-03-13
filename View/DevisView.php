@@ -218,8 +218,9 @@ END;
 						echo "\t\t\t\t\t<option value=\"$id\"$selected>$id_display - $hd</option>\n";
 					}
 				}
-				if (!$adisabled) echo "\t\t\t\t</optgroup>\n\t\t\t</select>\n";
+				if (!$adisabled) echo "\t\t\t\t</optgroup>\n";
 			}
+			if (!$adisabled) echo "\t\t\t</select>\n";
 			$class_error = isset($_SESSION['mail_error']) ? ' error' : '';
 			$msg_error = isset($_SESSION['mail_error']) ? 'Veuillez entrer une adresse email valide. Elle sera utilisée pour vous proposer les offres de devis.' : '';
 			$autofocus_error = isset($_SESSION['mail_error']) ? ' autofocus' : 'L\'adresse email sera utilisée pour vous proposer les offres de devis.';

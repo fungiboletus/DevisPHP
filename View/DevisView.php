@@ -422,7 +422,7 @@ END;
 	}
 
 	public static function showFormSelectionList($type, $subtype, $dep) {
-	$action_form = CNavigation::generateUrlToApp('Dashboard', 'liste', array(
+	$action_form = CNavigation::generateMergedUrl('Dashboard', 'liste', array(
 		'type' => '-type-',
 		'subtype' => '-subtype-',
 		'dep' => '-dep-'));

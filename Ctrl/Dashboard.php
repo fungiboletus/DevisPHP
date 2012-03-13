@@ -76,17 +76,20 @@ class Dashboard
 
 		$query = 'etape '.$etape;
 		
-		if (isset($_REQUEST['type']) && isset($_REQUEST['subtype']))
-		{
-			$type = $_REQUEST['type'];
-			$subtype = $_REQUEST['subtype'];
+		$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : -1;
+		$subtype = isset($_REQUEST['subtype']) ? $_REQUEST['subtype'] : -1;
+		$dep = Regions::validerID(isset($_REQUEST['dep']) ? $_REQUEST['dep'] : -1);
+		Categories::validerIDs($type, $subtype);
 
-			Categories::validerIDs($type, $subtype);
+		$type = (!isset($_REQUEST['type']) || $_REQUEST['type'] === '*') ? '*' : $type;
+		$subtype = (!isset($_REQUEST['subtype']) || $_REQUEST['subtype'] === '*') ? '*' : $subtype;
+		$dep = (!isset($_REQUEST['dep']) || $_REQUEST['dep'] === '*') ? '*' : $dep;
 
-			if ($_REQUEST['type'] !== '*') $query .= " and type = $type";
-			if ($_REQUEST['subtype'] !== '*') $query .= " and subtype = $subtype";
-			DevisView::showFormSelectionList();
-		}
+		if ($type !== '*') $query .= " and type = $type";
+		if ($subtype !== '*') $query .= " and subtype = $subtype";
+		if ($dep !== '*') $query .= " and dep = $dep";
+
+		DevisView::showFormSelectionList($type, $subtype, $dep);
 
 		echo "</div>\n";
 		DevisView::showList(R::find('devis', $query));

@@ -3,8 +3,16 @@ class DevisView {
 	
 	const texte_categorie = 'Pas de sous-catégorie';
 
-	public static function showSousCatSelect($categorie = array(), $selected_id = null) {
-		echo '<option value="-1">',self::texte_categorie,'</option>';
+	public static function showSousCatSelect($categorie = array(), $selected_id = null, $all_allowed = false) {
+
+		if ($all_allowed)
+		{
+			$selected = $selected_id === '*' ? ' selected' : ''; 
+			echo "\t\t\t\t\t<option value=\"*\"$selected>Toutes</option>\n";
+		}
+
+		$selected = $selected_id === -1 ? ' selected' : ''; 
+		echo '<option value="-1"',$selected,'>',self::texte_categorie,'</option>';
 
 			foreach ($categorie as $id => $sc) {
 				$hsc = htmlspecialchars($sc);
@@ -13,9 +21,15 @@ class DevisView {
 			}
 	}
 
-	public static function showCatSelect($selected_id, $sub_selected_id, $adisabled = false)
+	public static function showCatSelect($a_selected_id, $a_sub_selected_id, $adisabled = false, $all_allowed = false)
 	{
+		$selected_id = $a_selected_id;
+		$sub_selected_id = $a_sub_selected_id;
+
 		Categories::validerIDs($selected_id, $sub_selected_id);
+
+		$selected_id = $a_selected_id === '*' ? -1 : $selected_id;
+		$sub_selected_id = $a_sub_selected_id === '*' ? '*' : $sub_selected_id;
 		
 		$disabled = $adisabled ? ' disabled' : '';
 		
@@ -29,6 +43,12 @@ class DevisView {
 		else
 		{
 			echo "\t\t\t<select name=\"type\" id=\"input_type\" class=\"span4\" required$disabled>\n";
+			if ($all_allowed)
+			{
+				$selected = $a_selected_id === '*' ? ' selected' : ''; 
+				echo "\t\t\t\t\t<option value=\"*\"$selected>Toutes</option>\n";
+			}
+
 			$first = null;
 
 			foreach (Categories::$liste as $id => $c) {
@@ -43,17 +63,26 @@ class DevisView {
 			echo "\t\t\t</select>\n";
 			
 			echo "\t\t\t<select name=\"subtype\" id=\"input_subtype\" class=\"span4\"$disabled>\n";
-			self::showSousCatSelect(is_null($first) ? array() : $first, $sub_selected_id);
+			self::showSousCatSelect(is_null($first) ? array() : $first, $sub_selected_id, $all_allowed);
 			echo "\t\t\t</select>\n";
 		}
 	}
 
-	public static function showDepartementSelect($id_dep, $adisabled = false)
+	public static function showDepartementSelect($a_id_dep, $adisabled = false, $all_allowed = false)
 	{
-		$id_dep = Regions::validerID($id_dep);
+		$id_dep = $a_id_dep === '*' ? -1 : Regions::validerID($a_id_dep);
 
 		$disabled = $adisabled ? ' disabled' : '';
-		if (!$adisabled) echo "\t\t\t<select name=\"dep\" id=\"input_dep\" class=\"span4\"$disabled>\n";
+		if (!$adisabled)
+		{
+			echo "\t\t\t<select name=\"dep\" id=\"input_dep\" class=\"span4\"$disabled>\n";
+			if ($all_allowed)
+			{
+				$selected = $a_id_dep === '*' ? ' selected' : ''; 
+				echo "\t\t\t\t\t<option value=\"*\"$selected>Tous</option>\n";
+			}
+		}
+
 		foreach (Regions::$liste as $region => $departements) {
 			if (!$adisabled) {
 				$hr = htmlspecialchars($region);
@@ -383,11 +412,11 @@ END;
 			'><i class="icon-white icon-trash"></i> Poubelle</a>', "\n\t";
 	}
 
-	public static function showFormSelectionList() {
+	public static function showFormSelectionList($type, $subtype, $dep) {
 	$action_form = CNavigation::generateUrlToApp('Dashboard', 'liste', array(
-		'type' => '*type*',
-		'subtype' => '*subtype*',
-		'dep' => '*dep*'));
+		'type' => '-type-',
+		'subtype' => '-subtype-',
+		'dep' => '-dep-'));
 	echo <<<END
 <form action="$action_form" name="selection_categories" method="get" class="form-horizontal">
 <fieldset>
@@ -395,7 +424,7 @@ END;
 		<label for="input_type" class="control-label">Département</label>
 		<div class="controls">
 END;
-		self::showDepartementSelect(42);
+		self::showDepartementSelect($dep, false, true);
 		echo <<<END
 		</div>
 	</div>
@@ -403,7 +432,7 @@ END;
 		<label for="input_type" class="control-label">Catégorie</label>
 		<div class="controls">
 END;
-		self::showCatSelect($_REQUEST['type'], $_REQUEST['subtype']);
+		self::showCatSelect($type, $subtype, false, true);
 		echo <<<END
 		</div>
 	</div>

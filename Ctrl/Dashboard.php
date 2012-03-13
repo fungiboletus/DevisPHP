@@ -8,12 +8,23 @@ class Dashboard
 	}
 	
 	public function view() {
+		if (isset($_REQUEST['cat'])) {
+			$d = new Devis();
+			$d->categories();
+			return;
+		}
+
 		CNavigation::setTitle(_('Visualisation d\'une demande de devis'));
 		if (isset($_REQUEST['id'])) {
 			$devis = R::load('devis', $_REQUEST['id']);
 			if (!$devis->getId()) CTools::hackError();
 
 			$admin = $_SESSION['user']->isAdmin;
+
+			if ($admin)
+			{
+				CHead::addJS('Devis');
+			}
 
 			DevisView::showForm($devis->getProperties(),
 				$admin ? 'admin' : 'artisan',

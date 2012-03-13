@@ -20,7 +20,7 @@ class Devis
 			'mail' => '',
 			'tel' => '');
 
-	public function index() {
+	public function categories() {
 		if (isset($_REQUEST['cat']))
 		{
 			$cats = Categories::$liste;
@@ -29,6 +29,17 @@ class Devis
 			DevisView::showSousCatSelect(
 				isset($_REQUEST['cat'], $cats) ?
 					$cats[$_REQUEST['cat']][1] : array());
+		}
+		else
+		{
+			CTools::hackError();
+		}
+	}
+
+	public function index() {
+		if (isset($_REQUEST['cat']))
+		{
+			$this->categories();
 		}
 		else
 		{

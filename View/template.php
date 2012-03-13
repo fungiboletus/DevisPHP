@@ -46,7 +46,7 @@ END;
 		$url_help = CNavigation::generateUrlToApp('Help');
 		$url_not_found = CNavigation::generateUrlToApp('PageIntrouvable');
 		$url_demandes = CNavigation::generateUrlToApp('Dashboard','liste');
-		$c_data = $CTRL_NAME === 'Data' && $ACTION_NAME === 'index' ? ' class="active"' : '';
+		$c_data = $CTRL_NAME === 'Dashboard' && $ACTION_NAME === 'liste' ? ' class="active"' : '';
 		$c_dashboard = $CTRL_NAME === 'Dashboard' && $ACTION_NAME === 'index' ? ' class="active"' : '';
 
 		echo <<<END
@@ -60,7 +60,7 @@ END;
 
 				<ul class="dropdown-menu">
 					<li><a href="$url_help">Aide</a></li>
-					<li><a href="$url_not_found">Une erreur 404</a></li>
+					<!--<li><a href="$url_not_found">Une erreur 404</a></li>-->
 					<li class="divider"></li>
 					<li><a href="$url_logout">Déconnexion</a></li>
 				</ul>

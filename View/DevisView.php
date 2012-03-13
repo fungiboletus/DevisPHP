@@ -349,7 +349,7 @@ END;
 END;
 	}
 	
-	public static function showList($devis)
+	public static function showList($devis, $montrer_achetes = true)
 	{
 		if ($devis)
 		{
@@ -369,11 +369,18 @@ END;
 				$c = Categories::$liste[$d['type']];
 				$sc = isset($c[1][$d['subtype']]) ? $c[1][$d['subtype']] : self::texte_categorie;
 
-				echo "\t<tr><td><a href=\"$url\">", htmlspecialchars($d['cp']),
+				$c_achete = $montrer_achetes && in_array($d, $_SESSION['user']->sharedDevis);
+				$achete =  $c_achete ? ' class="achete"' : '';
+
+				echo "\t<tr$achete><td><a href=\"$url\">", htmlspecialchars($d['cp']),
 					 "</a></td><td><a href=\"$url\">", htmlspecialchars($c[0]),
 					 ' - ', htmlspecialchars($sc),
-					 "</a></td><td><a href=\"$url\">", wordwrap(htmlspecialchars($d['sujet']),60, "<br/>", true),
-					 "</a></td><td><a href=\"$url\">", htmlspecialchars($d['budget']),
+					 "</a></td><td>";
+					 
+				if ($c_achete) echo '<span class="badge badge-info">Acheté</span> &nbsp;';	
+				
+				echo "<a href=\"$url\">", wordwrap(htmlspecialchars($d['sujet']),60, "<br/>", true),
+					"</a></td><td><a href=\"$url\">", htmlspecialchars($d['budget']),
 					 "</a></td></tr>\n";
 			}
 

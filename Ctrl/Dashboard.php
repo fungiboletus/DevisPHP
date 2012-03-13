@@ -4,7 +4,14 @@ class Dashboard
 {
 	public function index() {
 		CNavigation::setTitle('Tableau de bord');
-		groaw($_SESSION);	
+		DashboardView::showInfosCredit($_SESSION['user']->credit);
+		$devis = $_SESSION['user']->sharedDevis;
+
+		if (count($devis))
+		{
+			DashboardView::showListTitle();
+			DevisView::showList($devis, false);
+		}
 	}
 	
 	public function view() {
@@ -31,7 +38,7 @@ class Dashboard
 				$devis->getID(),
 				!$admin,
 				$devis->etape,
-				!($admin || false));
+				!($admin || in_array($devis, $_SESSION['user']->sharedDevis)));
 		}
 		else
 		{
@@ -46,14 +53,24 @@ class Dashboard
 
 		if (!$devis->getId()) CTools::hackError();
 
-		if ($isset($_REQUEST['confirmer']))
+		if (isset($_REQUEST['confirmer']))
 		{
-
+			if (in_array($devis, $_SESSION['user']->sharedDevis)) {
+				new CMessage('Vous avez déjà acheté ce devis', 'error');
+			}
+			else
+			{
+				$_SESSION['user']->credit -= COUT_ACHAT;
+				$_SESSION['user']->sharedDevis[] = $devis;
+				R::store($_SESSION['user']);
+				new CMessage('Félicitations pour votre achat');
+			}
+			CNavigation::redirectToApp('Dashboard', 'view', array('id' => $devis->getId()));
 		}
 		else
 		{
 			CNavigation::setTitle('Achat d\'une demande de devis');
-			DevisView::showConfirmationAchat($devis->getId(), $_SESSION['user']->credit, 1);
+			DevisView::showConfirmationAchat($devis->getId(), $_SESSION['user']->credit, COUT_ACHAT);
 		}
 	}
 

@@ -95,3 +95,6 @@ line-height:normal;
 hr.small-hr {
 margin:0.5em 0;
 }
+.devis_list.table-striped tbody tr.achete td {
+/*background-color:blue;*/
+}

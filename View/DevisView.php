@@ -11,7 +11,7 @@ class DevisView {
 			}
 	}
 
-	public static function showForm($values, $mode = 'nouveau', $devis_id = null, $adisabled = false, $valider = 0) {
+	public static function showForm($values, $mode = 'nouveau', $devis_id = null, $adisabled = false, $valider = 0, $masquer_infos = false) {
 
 		$values = array_map('htmlspecialchars', $values); // <3
 
@@ -173,12 +173,19 @@ END;
 </fieldset>
 <fieldset>
 	<legend>Coordonées</legend>
+END;
+if (!$masquer_infos)
+{
+	echo <<<END
 	<div class="control-group">
 		<label for="input_nom" class="control-label">Nom et Prénom</label>
 		<div class="controls">
 			<input name="nom" id="input_nom" type="text" required class="span4" value="{$values['nom']}" maxlength="80"$disabled/>
 		</div>
 	</div>
+END;
+}
+echo <<<END
 	<div class="control-group">
 		<label for="input_cp" class="control-label">Code postal</label>
 		<div class="controls">
@@ -219,6 +226,16 @@ END;
 		echo <<<END
 		</div>
 	</div>
+END;
+if ($masquer_infos)
+{
+	echo <<<END
+	<div class="alert alert-info">Vous devez acheter la demande de devis pour obtenir les <em>coordonnées complètes</em>.</div> 
+END;
+}
+else
+{
+echo <<<END
 	<div class="control-group$class_error">
 		<label for="input_mail" class="control-label">Adresse email</label>
 		<div class="controls">
@@ -240,7 +257,9 @@ END;
 			<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80"$disabled/>
 		</div>
 	</div>
-
+END;
+}
+echo <<<END
 </fieldset>
 	<div class="form-actions">
 END;

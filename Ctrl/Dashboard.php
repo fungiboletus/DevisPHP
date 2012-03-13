@@ -15,17 +15,12 @@ class Dashboard
 
 			$admin = $_SESSION['user']->isAdmin;
 
-			if ($admin || false) {
-				DevisView::showForm($devis->getProperties(),
-					$admin ? 'admin' : 'artisan',
-					$devis->getID(),
-					!$admin,
-					$devis->etape);
-			}
-			else
-			{
-				groaw($devis);
-			}
+			DevisView::showForm($devis->getProperties(),
+				$admin ? 'admin' : 'artisan',
+				$devis->getID(),
+				!$admin,
+				$devis->etape,
+				!($admin || false));
 		}
 		else
 		{
@@ -34,7 +29,7 @@ class Dashboard
 	}
 
 	public function liste() {
-		echo "<div class=\"well\">\n\t";
+		echo "<div class=\"well well-small\">\n\t";
 
 		if ($_SESSION['user']->isAdmin) {
 			switch (isset($_REQUEST['etape']) ? $_REQUEST['etape'] : null) {

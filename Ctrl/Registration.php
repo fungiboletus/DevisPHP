@@ -30,6 +30,7 @@ class Registration
 			$user->mail = $_POST['mail'];
 			$user->password = sha1($_POST['password'].'grossel_devis');
 			$user->isAdmin = false;
+			$user->credit = 10;
 
 			R::store($user);
 			

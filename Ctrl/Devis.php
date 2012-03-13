@@ -91,6 +91,11 @@ class Devis
 					if ($_POST['submit'] !== 'Enregistrer')
 						CNavigation::redirectToApp('Dashboard', 'liste');
 				}
+				else if ($_POST['submit'] === 'Acheter')
+				{
+					CNavigation::redirectToApp('Dashboard', 'acheter',array(
+						'id' => $devis->getID()));
+				}
 			}
 		}
 

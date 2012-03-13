@@ -182,7 +182,7 @@ END;
                 <span class="add-on">€</span>
 END;
 			$type = $adisabled ? 'text' : 'number';
-			echo "\t\t\t<input name=\"budget\" class=\"span2\" id=\"input_budget\" size=\"16\" type=\"$type\" min=\"100\" value=\"{$values['budget']}\",$disabled>\n";
+			echo "\t\t\t<input name=\"budget\" class=\"span2\" id=\"input_budget\" size=\"16\" type=\"$type\" min=\"0\" value=\"{$values['budget']}\",$disabled>\n";
 
 			if (!$adisabled) {
 				echo "\t\t\t<p class=\"help-block\">Saisissez le budget que vous souhaitez investir. Laissez le champ vide pour ne pas indiquer de budget.</p>\n";
@@ -382,8 +382,8 @@ END;
 		else
 		{
 			echo <<<END
-<div class="alert-message block-message warning">
-<p>Il n'y a aucune demande de devis pour l'instant.</p>
+<div class="alert alert-block alert-warning">
+<p>Il n'y a aucune demande de devis.'</p>
 </div>
 END;
 		}
@@ -410,6 +410,8 @@ END;
 			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'poubelle')),
 			'" class="btn btn-large btn-inverse"',$etape === '= -1' ? 'disabled': '',
 			'><i class="icon-white icon-trash"></i> Poubelle</a>', "\n\t";
+
+		echo '<hr class="small-hr"/>';
 	}
 
 	public static function showFormSelectionList($type, $subtype, $dep) {
@@ -417,9 +419,14 @@ END;
 		'type' => '-type-',
 		'subtype' => '-subtype-',
 		'dep' => '-dep-'));
+	$reset_url = CNavigation::generateUrlToApp('Dashboard', 'liste', array(
+		'type' => '*',
+		'subtype' => '*',
+		'dep' => '*'));
 	echo <<<END
 <form action="$action_form" name="selection_categories" method="get" class="form-horizontal">
 <fieldset>
+	<h4>Filtrer</h4>
 	<div class="control-group">
 		<label for="input_type" class="control-label">Département</label>
 		<div class="controls">
@@ -434,9 +441,28 @@ END;
 END;
 		self::showCatSelect($type, $subtype, false, true);
 		echo <<<END
+		<a href="$reset_url" class="btn btn-inverse float_right">Reset</a>
 		</div>
 	</div>
 </fieldset>
+END;
+	}
+
+	public static function showConfirmationAchat($id, $credit, $cout) {
+	$url_demande = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $id));
+	$url_confirmation = CNavigation::generateUrlToApp('Dashboard', 'acheter', array('id' => $id, 'confirmer' => true));
+	$diff = $credit - $cout;
+echo <<<END
+<div class="alert alert-block alert-info">
+<p>Êtes vous certain de vouloir acheter cette demande de devis pour <strong>$cout</strong> € ?</p>
+
+<p>Vous avez actuellement <strong>$credit</strong> € de crédit. Après achat, il vous restera <strong>$diff</strong> €.</p>
+
+<hr/>
+
+<a href="$url_demande" class="btn btn-large">Revenir à la demande</a>
+<a href="$url_confirmation" class="btn btn-large btn-warning float_right">Confirmer l'achat</a>
+</div>
 END;
 	}
 }

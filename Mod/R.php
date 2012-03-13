@@ -175,6 +175,9 @@ class RedBean_Driver_PDO implements RedBean_Driver {
 		$this->connect();
 		return $this->pdo;
 	}
+	public function close() {
+		$this->pdo = null;
+	}
 }
 class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
     private $null = null;
@@ -318,7 +321,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable {
 	}
 	public function __call($method, $args) {
 		if (!isset($this->__info["model"])) {
-			$modelName = RedBean_ModelHelper::getModelName( $this->getMeta("type") );
+			$modelName = RedBean_ModelHelper::getModelName( $this->getMeta("type"), $this );
 			if (!class_exists($modelName)) return null;
 			$obj = new $modelName();
 			$obj->loadBean($this);
@@ -402,6 +405,7 @@ interface RedBean_Adapter {
 	public function startTransaction();
 	public function commit();
 	public function rollback();
+	public function close();
 }
 class RedBean_Adapter_DBAdapter extends RedBean_Observable implements RedBean_Adapter {
 	private $db = null;
@@ -482,6 +486,9 @@ class RedBean_Adapter_DBAdapter extends RedBean_Observable implements RedBean_Ad
 	}
 	public function rollback() {
 		return $this->db->FailTrans();
+	}
+	public function close() {
+		$this->db->close();
 	}
 }
 interface RedBean_QueryWriter {
@@ -826,8 +833,9 @@ class RedBean_QueryWriter_MySQL extends RedBean_QueryWriter_AQueryWriter impleme
 		}
 		return RedBean_QueryWriter_MySQL::C_DATATYPE_TEXT32;
 	}
-	public function code( $typedescription ) {
+	public function code( $typedescription, $includeSpecials = false ) {
 		$r = ((isset($this->sqltype_typeno[$typedescription])) ? $this->sqltype_typeno[$typedescription] : self::C_DATATYPE_SPECIFIED);
+		if ($includeSpecials) return $r;
 		if ($r > self::C_DATATYPE_SPECIFIED) return self::C_DATATYPE_SPECIFIED;
 		return $r;
 	}
@@ -955,8 +963,9 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 		$sql = "ALTER TABLE `$table` ADD `$column` $type ";
 		$this->adapter->exec( $sql );
 	}
-	public function code( $typedescription ) {
+	public function code( $typedescription, $includeSpecials = false ) {
 		$r =  ((isset($this->sqltype_typeno[$typedescription])) ? $this->sqltype_typeno[$typedescription] : 99);
+		if ($includeSpecials) return $r;
 		if ($r > self::C_DATATYPE_SPECIFIED) return self::C_DATATYPE_SPECIFIED;
 		return $r;
 	}
@@ -1111,6 +1120,7 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 	const C_DATATYPE_DOUBLE = 1;
 	const C_DATATYPE_TEXT = 3;
 	const C_DATATYPE_SPECIAL_DATE = 80;
+	const C_DATATYPE_SPECIAL_DATETIME = 81;
 	const C_DATATYPE_SPECIFIED = 99;
 	protected $adapter;
 	protected $quoteCharacter = '"';
@@ -1126,7 +1136,8 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 				  self::C_DATATYPE_INTEGER=>' integer ',
 				  self::C_DATATYPE_DOUBLE=>' double precision ',
 				  self::C_DATATYPE_TEXT=>' text ',
-				  self::C_DATATYPE_SPECIAL_DATE => ' date '
+				  self::C_DATATYPE_SPECIAL_DATE => ' date ',
+				  self::C_DATATYPE_SPECIAL_DATETIME => ' timestamp without time zone ',
 		);
 		$this->sqltype_typeno = array();
 		foreach($this->typeno_sqltype as $k=>$v)
@@ -1153,9 +1164,12 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 	}
 	public function scanType( $value, $flagSpecial=false ) {
 		$this->svalue=$value;
-		if ($flagSpecial) {
-			if ($value && preg_match('/^\d\d\d\d\-\d\d-\d\d$/',$value)) {
+		if ($flagSpecial && $value) {
+			if (preg_match('/^\d\d\d\d\-\d\d-\d\d$/',$value)) {
 				return RedBean_QueryWriter_PostgreSQL::C_DATATYPE_SPECIAL_DATE;
+			}
+			if (preg_match('/^\d\d\d\d\-\d\d-\d\d\s\d\d:\d\d:\d\d$/',$value)) {
+				return RedBean_QueryWriter_PostgreSQL::C_DATATYPE_SPECIAL_DATETIME;
 			}
 		}
 		$sz = ($this->startsWithZeros($value));
@@ -1173,8 +1187,9 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 			return self::C_DATATYPE_TEXT;
 		}
 	}
-	public function code( $typedescription ) {
+	public function code( $typedescription, $includeSpecials = false ) {
 		$r = ((isset($this->sqltype_typeno[$typedescription])) ? $this->sqltype_typeno[$typedescription] : 99);
+		if ($includeSpecials) return $r;
 		if ($r > self::C_DATATYPE_SPECIFIED) return self::C_DATATYPE_SPECIFIED;
 		return $r;
 	}
@@ -1998,9 +2013,9 @@ class RedBean_ModelHelper implements RedBean_Observer {
 	public function onEvent( $eventName, $bean ) {
 		$bean->$eventName();
 	}
-	public static function getModelName( $model ) {
+	public static function getModelName( $model, $bean = null ) {
 		if (self::$modelFormatter){
-			return self::$modelFormatter->formatModel($model);
+			return self::$modelFormatter->formatModel($model,$bean);
 		}
 		else {
 			return 'Model_'.ucfirst($model);
@@ -2131,6 +2146,11 @@ class RedBean_Facade {
 		$rows = self::$writer->selectRecord( $type, array('id'=>$keys),array($sql,$values),false );
 		return self::$redbean->convertToBeans($type,$rows);
 	}
+	public static function relatedOne( RedBean_OODBBean $bean, $type, $sql=null, $values=array() ) {
+		$beans = self::related($bean, $type, $sql, $values);
+		if (count($beans)==0) return null;
+		return reset( $beans );
+	}
 	public static function areRelated( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2) {
 		return self::$associationManager->areRelated($bean1,$bean2);
 	}
@@ -2227,12 +2247,14 @@ class RedBean_Facade {
 					array_push($copy->$owned,self::dup($subBean,$trail,$pid));	
 				}
 			}
+			$copy->setMeta('sys.shadow.'.$owned,null);
 			if ($beans = $bean->$shared) {
 				$copy->$shared = array();
 				foreach($beans as $subBean) {
 					array_push($copy->$shared,$subBean);
 				}
 			}
+			$copy->setMeta('sys.shadow.'.$shared,null);
 		}
 		if ($pid) $copy->id = $bean->id;
 		return $copy;
@@ -2369,9 +2391,35 @@ class RedBean_Facade {
 			self::$writer->wipeAll();
 		}
 	}
-	 public static function dependencies($dep) {
-               self::$redbean->setDepList($dep);
-       }
+	public static function dependencies($dep) {
+		self::$redbean->setDepList($dep);
+    }
+	public static function storeAll($beans) {
+		$ids = array();
+		foreach($beans as $bean) $ids[] = self::store($bean);
+		return $ids;
+	}
+	public static function trashAll($beans) {
+		foreach($beans as $bean) self::trash($bean);
+	}
+	public static function dispenseLabels($type,$labels) {
+		$labelBeans = array();
+		foreach($labels as $label) {
+			$labelBean = self::dispense($type);
+			$labelBean->name = $label;
+			$labelBeans[] = $labelBean;
+		}
+		return $labelBeans;
+	}
+	public function gatherLabels($beans) {
+		$labels = array();
+		foreach($beans as $bean) $labels[] = $bean->name;
+		sort($labels);
+		return $labels;
+	}
+	public static function close() {
+		self::$adapter->close();
+	}
 }
 function __lcfirst( $str ){	return (string)(strtolower(substr($str,0,1)).substr($str,1)); }
 class RedBean_BeanCan {
@@ -2467,7 +2515,7 @@ class RedBean_Cooker {
 		$this->redbean = $this->toolbox->getRedbean();
 	}
 	public function graph( $array, $filterEmpty = false ) {
-		$beans = array();
+      	$beans = array();
 		if (is_array($array) && isset($array['type'])) {
 			$type = $array['type'];
 			unset($array['type']);

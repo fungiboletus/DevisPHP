@@ -79,3 +79,19 @@ table .headerSortUp.purple, table .headerSortDown.purple {
   background-color: #e2d5f0;
 }
 
+form[name=selection_categories] {
+margin-bottom:0;
+}
+
+form[name=selection_categories].form-horizontal .control-group {
+margin-bottom:0;
+margin-top:9px;
+}
+
+form[name=selection_categories] legend {
+font-size:1em;
+line-height:normal;
+}
+hr.small-hr {
+margin:0.5em 0;
+}

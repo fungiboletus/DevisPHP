@@ -39,6 +39,24 @@ class Dashboard
 		}
 	}
 
+	public function acheter() {
+		if (!isset($_REQUEST['id'])) CTools::hackError();
+	
+		$devis = R::load('devis', intval($_REQUEST['id']));
+
+		if (!$devis->getId()) CTools::hackError();
+
+		if ($isset($_REQUEST['confirmer']))
+		{
+
+		}
+		else
+		{
+			CNavigation::setTitle('Achat d\'une demande de devis');
+			DevisView::showConfirmationAchat($devis->getId(), $_SESSION['user']->credit, 1);
+		}
+	}
+
 	public function liste() {
 		echo "<div class=\"well well-small\">\n\t";
 

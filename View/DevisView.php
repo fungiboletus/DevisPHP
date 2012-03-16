@@ -390,9 +390,10 @@ END;
 		{
 			echo <<<END
 <div class="alert alert-block alert-warning">
-<p>Il n'y a aucune demande de devis.'</p>
+<p>Il n'y a aucune demande de devis.</p>
 </div>
 END;
+//'
 		}
 	}
 
@@ -452,24 +453,6 @@ END;
 		</div>
 	</div>
 </fieldset>
-END;
-	}
-
-	public static function showConfirmationAchat($id, $credit, $cout) {
-	$url_demande = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $id));
-	$url_confirmation = CNavigation::generateUrlToApp('Dashboard', 'acheter', array('id' => $id, 'confirmer' => true));
-	$diff = $credit - $cout;
-echo <<<END
-<div class="alert alert-block alert-info">
-<p>Êtes vous certain de vouloir acheter cette demande de devis pour <strong>$cout</strong> € ?</p>
-
-<p>Vous avez actuellement <strong>$credit</strong> € de crédit. Après achat, il vous restera <strong>$diff</strong> €.</p>
-
-<hr/>
-
-<a href="$url_demande" class="btn btn-large">Revenir à la demande</a>
-<a href="$url_confirmation" class="btn btn-large btn-warning float_right">Confirmer l'achat</a>
-</div>
 END;
 	}
 }

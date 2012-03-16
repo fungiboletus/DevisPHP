@@ -28,17 +28,16 @@ class Dashboard
 
 			$admin = $_SESSION['user']->isAdmin;
 
-			if ($admin)
-			{
-				CHead::addJS('Devis');
-			}
+			if ($admin) CHead::addJS('Devis');
 
+			$achete = in_array($devis, $_SESSION['user']->sharedDevis);
+			
 			DevisView::showForm($devis->getProperties(),
-				$admin ? 'admin' : 'artisan',
+				$admin ? 'admin' : ($achete ? 'artisan_achete' : 'artisan'),
 				$devis->getID(),
 				!$admin,
 				$devis->etape,
-				!($admin || in_array($devis, $_SESSION['user']->sharedDevis)));
+				!($admin || $achete));
 		}
 		else
 		{
@@ -58,6 +57,10 @@ class Dashboard
 			if (in_array($devis, $_SESSION['user']->sharedDevis)) {
 				new CMessage('Vous avez déjà acheté ce devis', 'error');
 			}
+			elseif ($_SESSION['user']->credit < COUT_ACHAT)
+			{
+				new CMessage('Désolé, mais vous n\'avez pas assez de crédits.', 'error');
+			}
 			else
 			{
 				$_SESSION['user']->credit -= COUT_ACHAT;
@@ -70,7 +73,10 @@ class Dashboard
 		else
 		{
 			CNavigation::setTitle('Achat d\'une demande de devis');
-			DevisView::showConfirmationAchat($devis->getId(), $_SESSION['user']->credit, COUT_ACHAT);
+			call_user_func(array('AchatView',
+				$_SESSION['user']->credit < COUT_ACHAT ?
+					'showInfoManqueCredit' : 'showConfirmationAchat'),
+				$devis->getId(), $_SESSION['user']->credit, COUT_ACHAT);
 		}
 	}
 

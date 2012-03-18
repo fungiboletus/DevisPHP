@@ -25,8 +25,11 @@ class Paypal
 
 		$url = $r->getScheme().'://'.$_SERVER['SERVER_NAME'];
 
+		$credit = floatval($_POST['credit']);
+		$_SESSION['credit'] = $credit;
+
 		$ret = $r->doExpressCheckout(
-			floatval($_POST['credit']), 'Crédit Devis Équitable',
+			$credit, 'Crédit Devis Équitable',
 			$url.CNavigation::generateUrlToApp('Paypal', 'retour'),
 			$url.CNavigation::generateUrlToApp('Paypal', 'annulation'),
 			'', 'EUR');
@@ -44,7 +47,7 @@ class Paypal
 		$log = R::dispense('paypal');
 		$log->date_log = time();
 		$log->infos = json_encode($resultat);
-		R::store($log);
+		$log->user = $_SESSION['user'];
 
 		if ($resultat['ACK'] == 'Success')
 		{
@@ -55,11 +58,17 @@ class Paypal
 
 			new CMessage('Félicitations pour votre achat de crédit');
 			new CMessage('Votre compte a été crédité de '.$credit.'€','warning');
+			$log->ok = true;
+			$log->credit = $credit;
 		}
 		else
 		{
 			new CMessage('Une erreur s\'est produite. N\'hésitez pas à contacter l\'administrateur en cas de problème. Les informations sur l\'erreur sont sauvegardées.', 'error');
+			$log->ok = false;
+			$log->credit = $_SESSION['credit'];
 		}
+		R::store($log);
+		unset($_SESSION['credit']);
 
 		CNavigation::redirectToApp('Dashboard');
 	}
@@ -68,6 +77,26 @@ class Paypal
 	{
 		new CMessage('Vous avez annulé la commande de crédit.', 'error');
 		CNavigation::redirectToApp('Paypal');
+	}
+
+	public function liste()
+	{
+		if (!$_SESSION['user']->isAdmin) CTools::hackError();
+		
+		CNavigation::setTitle('Journal des opérations Paypal');
+
+		PaypalView::showList(R::find('paypal'));
+	}
+
+	public function view()
+	{
+		if (!$_SESSION['user']->isAdmin || !isset($_REQUEST['id'])) CTools::hackError();
+		$log = R::load('paypal', $_REQUEST['id']);
+		if (!$log->getID()) CTools::hackError();
+
+		CNavigation::setTitle('Visualisation d\'un log paypal');
+	
+		PaypalView::showInfosLog($log);
 	}
 }
 

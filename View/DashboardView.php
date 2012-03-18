@@ -13,7 +13,12 @@ class DashboardView {
 END;
 		if ($_SESSION['user']->isAdmin)
 		{
-			echo '<p>Vous êtes administrateur du site.</p>';	
+			$url_paypal = CNavigation::generateUrlToApp('Paypal', 'liste');
+			echo <<<END
+	<a href="$url_paypal" class="btn btn-warning float_right">Consulter le journal Paypal</a>
+	<p>Vous êtes administrateur du site.</p>
+	
+END;
 		}
 		else
 		{

@@ -25,7 +25,7 @@ END;
 	</div>
 </fieldset>
 	<div class="form-actions">
-		<input type="submit" class="btn btn-large btn-warning" value="Procéder au payement par Paypal"/>
+		<input type="submit" class="btn btn-large btn-warning" value="Procéder au payement avec Paypal"/>
 	</div>
 </form>
 END;

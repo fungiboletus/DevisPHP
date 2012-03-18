@@ -55,7 +55,7 @@ class Dashboard
 
 			if ($devis->nb_achats >= NB_ACHATS_MAX && !$admin && !$achete)
 			{
-				new CMessage('Désolé, mais cette demande de devis n\'est plus disponible à la vente', 'error');
+				new CMessage('Désolé, mais cette demande de devis n\'est pas disponible actuellement.', 'error');
 				CNavigation::redirectToApp('Dashboard', 'liste');
 			}
 			

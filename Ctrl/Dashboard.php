@@ -61,7 +61,8 @@ class Dashboard
 			
 			if ($admin && $devis->nb_achats > 0)
 			{
-				groaw(R::related($devis, 'user'));
+				echo "<h3>Liste des utilisateurs ayant acheté cette demande de devis</h3>\n<br/>\n";
+				UserView::showList(R::related($devis, 'user'));
 			}
 
 			DevisView::showForm($devis->getProperties(),
@@ -70,6 +71,8 @@ class Dashboard
 				!$admin,
 				$devis->etape,
 				!($admin || $achete));
+			
+
 		}
 		else
 		{
@@ -109,7 +112,9 @@ class Dashboard
 
 				$company = $_SESSION['user']->company ? $_SESSION['user']->company : $_SESSION['user']->name; 
 				$website = $_SESSION['user']->website ? ' ('.$_SESSION['user']->website.')' : '';
-				$body = "Votre demande de devis sur Devis Équitable a été sélectionnée par l\'entreprise $company$website";
+				$telephone = $_SESSION['user']->tel ? "\n\nTéléphone: ".$_SESSION['user']->tel : '';
+
+				$body = "Votre demande de devis sur Devis Équitable a été sélectionnée par l\'entreprise $company$website.";
 			
 				$mail = MMail::newMail()
 					->setSubject('Votre demande de devis a été sélectionnée par «'.$company.'»')
@@ -124,7 +129,7 @@ class Dashboard
 					$body .= ' Vous trouverez une présentation en pièce jointe.';
 				}
 
-				$mail->setBody($body);
+				$mail->setBody($body.$telephone);
 
 				MMail::send($mail);
 			}

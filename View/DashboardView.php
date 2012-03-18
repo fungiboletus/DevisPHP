@@ -18,7 +18,7 @@ END;
 		else
 		{
 			$url_user = CNavigation::generateUrlToApp('User');
-			$url_credit = CNavigation::generateUrlToApp('User', 'credit');
+			$url_credit = CNavigation::generateUrlToApp('Paypal');
 			echo <<<END
 	<div class="float_right">
 	<a href="$url_user" class="btn btn-primary">Modifier les informations du profil</a>

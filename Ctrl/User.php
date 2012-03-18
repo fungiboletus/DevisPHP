@@ -36,7 +36,7 @@ class User
 	public function submit()
 	{
 		groaw($_POST);
-		if (!CNavigation::isValidSubmit(array('id', 'name', 'mail', 'password', 'company', 'website'), $_POST)) CTools::hackError();
+		if (!CNavigation::isValidSubmit(array('id', 'name', 'mail', 'password', 'company', 'website', 'tel'), $_POST)) CTools::hackError();
 
 		if (!filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL)) {
 			new CMessage(_('Une adresse mail est demandée'), 'error');
@@ -57,6 +57,7 @@ class User
 		$user->mail = $_POST['mail'];
 		$user->company = $_POST['company'];
 		$user->website = $_POST['website'];
+		$user->tel = $_POST['tel'];
 
 		if ($admin && CNavigation::isValidSubmit(array('credit','deps', 'cats'), $_POST))
 		{
@@ -90,7 +91,7 @@ class User
 			}
 			else
 			{
-				switch ($_FILES['file']['error'])
+				switch ($_FILES['pdf']['error'])
 				{
 					case UPLOAD_ERR_INI_SIZE:
 					case UPLOAD_ERR_FORM_SIZE:
@@ -100,7 +101,7 @@ class User
 						new CMessage('Le fichier n\'a pas totalement été envoyé.','error');
 						break;
 					case UPLOAD_ERR_NO_FILE:
-						new CMessage('Aucun fichier n\'é été envoyé. Étrange…', 'error');
+						// Le comportement de base
 						break;
 					default:
 						new CMessage('Une erreur inconnue a été détectée pour le fichier pdf.', 'error');

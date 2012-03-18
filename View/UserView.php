@@ -50,6 +50,12 @@ class UserView
 		</div>
 	</div>
 	<div class="control-group">
+		<label for="input_tel" class="control-label">Téléphone</label>
+		<div class="controls">
+			<input name="tel" id="input_tel" type="text" class="span6" value="{$values['tel']}" maxlength="80"/>
+		</div>
+	</div>
+	<div class="control-group">
 		<label for="input_pdf" class="control-label">Support de présentation</label>
 		<div class="controls">
 			<input name="pdf" id="input_pdf" type="file" class="span4" accept="application/pdf" maxlength="2097152"/>

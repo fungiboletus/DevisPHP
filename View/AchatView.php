@@ -26,6 +26,7 @@ END;
 	public static function showInfoManqueCredit($id, $credit, $cout)
 	{
 		$url_demande = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $id));
+		$url_credit = CNavigation::generateUrlToApp('Paypal');
 
 		echo <<<END
 <div class="alert alert-block alert-error">
@@ -34,7 +35,7 @@ END;
 <hr/>
 
 <a href="$url_demande" class="btn btn-large">Revenir à la demande</a>
-<a href="#" class="btn btn-large btn-success float_right">Rajouter du crédit</a>
+<a href="$url_credit" class="btn btn-large btn-success float_right">Rajouter du crédit</a>
 </div>
 END;
 	}

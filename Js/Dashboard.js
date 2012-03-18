@@ -4,6 +4,12 @@ $(document).ready(function() {
 		table.tablesorter({	
 			sortList: [[0,0]]
 		});
+	
+	var table = $('table.user_list');
+	if (table.tablesorter)
+		table.tablesorter({	
+			sortList: [[0,0]]
+		});
 
 	var gestion_filtres = function() {
 		var type = $('#input_type').attr('value');

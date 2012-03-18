@@ -388,6 +388,7 @@ END;
 			<span class="badge badge-info">$id</span>
 END;
 				if ($c_achete) echo '&nbsp;<span class="badge badge-warning">Acheté</span>';	
+				if ($_SESSION['user']->isAdmin && $d['nb_achats']) echo '&nbsp;<span class="badge badge-warning">',$d['nb_achats'],' achat',$d['nb_achats'] > 1 ? 's' : '','</span>';	
 				echo <<<END
 		</a></td>
 		<td>

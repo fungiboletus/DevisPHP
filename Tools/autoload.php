@@ -17,5 +17,10 @@ function __autoload($class)
 			return;
 		}
 	}
+
+	if (class_exists('Swift', false))
+	{
+		Swift::autoload($class);
+	}
 }// __autoload()
 ?>

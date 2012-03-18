@@ -28,16 +28,20 @@ class Registration
 			$user = R::dispense('user');
 			$user->name = $_POST['nom'];
 			$user->mail = $_POST['mail'];
+			$user->company = '';
+			$user->website = '';
 			$user->password = sha1($_POST['password'].'grossel_devis');
 			$user->isAdmin = false;
 			$user->credit = CREDIT_DEPART;
+			$user->cats = '';
+			$user->deps = '';
 
 			R::store($user);
 			
 			new CMessage('Inscription réussie');
 			$_SESSION['logged'] = true;
 			$_SESSION['user'] = $user;
-			CNavigation::redirectToApp('Dashboard');
+			CNavigation::redirectToApp('User');
 		}
 		else {
 			CTools::hackError();

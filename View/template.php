@@ -53,6 +53,14 @@ END;
 		<ul class="nav left boutons_inspecteur">
 			<li$c_dashboard><a href="$url_dashboard" class="icon_button line_text">Tableau de bord</a></li>
 			<li$c_data><a href="$url_demandes" class="icon_button shoebox_text">Demandes de devis</a></li>
+END;
+		if ($_SESSION['user']->isAdmin)
+		{
+			$c_users = $CTRL_NAME === 'User' && $ACTION_NAME === 'liste' ? ' class="active"' : '';
+			$url_users = CNavigation::generateUrlToApp('User','liste');
+			echo "\t\t<li$c_users><a href=\"$url_users\" class=\"icon_button shoebox_text\">Utilisateurs</a></li>\n";
+		}
+		echo <<<END
 		</ul>
 		<ul class="nav right">	
 			<li class="dropdown">

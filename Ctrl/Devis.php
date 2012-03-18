@@ -54,6 +54,7 @@ class Devis
 	
 		$devis = null;
 		$modification = false;
+		$ancien_devis = null;
 		$etape_nouveau_devis = 0;
 		
 		if (isset($_SESSION['logged']) && isset($_POST['devis_id']))
@@ -71,6 +72,11 @@ class Devis
 						$devis->etape = 1;
 						R::store($devis);
 						new CMessage('La demande de devis a été validée');
+						$mail = MMail::newMail()
+							->setSubject('Votre demande de devis a été validée')
+							->setTo(array($devis->mail => $devis->nom))
+							->setBody('Votre demande de devis sur Devis Équitable a été validée.');
+						MMail::send($mail);
 						break;
 					case 'Invalider':
 						$devis->etape = 0;
@@ -83,6 +89,7 @@ class Devis
 						$devis->etape = -2;
 						R::store($devis);
 						$modification = true;
+						$ancien_devis = $devis;
 						break;
 					default:
 						CTools::hackError();
@@ -130,7 +137,17 @@ class Devis
 			$devis->dep = Regions::validerID($values['dep']);
 			$devis->mail = $values['mail'];
 			$devis->tel = $values['tel'];
-			$devis->date_creation = time();
+
+			if (!$modification)
+			{
+				$devis->date_creation = time();
+				$devis->nb_achats = 0;
+			}
+			else
+			{
+				$devis->date_creation = $ancien_devis->date_creation;
+				$devis->nb_achats = $ancien_devis->nb_achats;
+			}
 
 			R::store($devis);
 
@@ -140,8 +157,7 @@ class Devis
 			}
 			else
 			{
-				//TODO trouver un meilleur message
-				new CMessage('Votre demande de devis a été enregistrée. Vous serez informé de l\'évolution des hostilités.');
+				new CMessage('Votre demande de devis a été enregistrée. Vous allez recevoir un mail de confirmation');
 			
 				$_SESSION['enregistrement_ok'] = true;
 				
@@ -152,6 +168,21 @@ class Devis
 					'dep' => $values['dep'],
 					'mail' => $values['mail'],
 					'tel' => $values['tel']));
+
+				$mail = MMail::newMail()
+					->setSubject('Confirmation de la création de votre demande de devis.')
+  					->setTo(array($values['mail'] => $values['nom']))
+  					->setBody('Votre demande de devis a bien été prise en compte par notre application.')
+					->addPart('Votre demande de devis a bien été prise en compte par notre application.', 'text/html');
+
+				MMail::send($mail);
+
+				$mail = MMail::newMail()
+					->setSubject('Nouvelle demande de devis')
+  					->setTo($GLOBALS['mail_admin'])
+  					->setBody('Une nouvelle demande de devis a été envoyée');
+
+				MMail::send($mail);
 
 				CNavigation::redirectToApp('Devis', 'ok');
 			}

@@ -12,7 +12,8 @@ class AchatView {
 <p>Êtes vous certain de vouloir acheter cette demande de devis pour <strong>$cout</strong> € ?</p>
 
 <p>Vous avez actuellement <strong>$credit</strong> € de crédit. Après achat, il vous restera <strong>$diff</strong> €.</p>
-
+<br/>
+<p>Le client sera informé par mail de votre achat.</p>
 <hr/>
 
 <a href="$url_demande" class="btn btn-large">Revenir à la demande</a>

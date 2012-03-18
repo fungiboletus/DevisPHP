@@ -275,7 +275,7 @@ END;
 if ($masquer_infos)
 {
 	echo <<<END
-	<div class="alert alert-info">Vous devez acheter la demande de devis pour obtenir les <em>coordonnées complètes</em>.</div> 
+	<div class="alert alert-info">Vous devez acheter la demande de devis pour obtenir les coordonnées <em>complètes</em>.</div> 
 END;
 }
 else
@@ -357,31 +357,49 @@ END;
 			echo <<<END
 			<table class="table table-striped table-bordered devis_list">
 				<thead><tr>
-					<th class="header yellow">Code postal</th>
+					<th class="header">Id</th>
+					<th class="header yellow">Date</th>
+					<th class="header orange">Code postal</th>
 					<th class="header green">Catégorie</th>
 					<th class="header blue">Sujet</th>
 					<th class="header purple">Budget</th>
 				</tr></thead>
 				<tbody>
 END;
-			foreach ($devis as $d) {
+			foreach ($devis as $d)
+			{
 				$url = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $d->getID()));
 				$c = Categories::$liste[$d['type']];
 				$sc = isset($c[1][$d['subtype']]) ? $c[1][$d['subtype']] : self::texte_categorie;
 
 				$c_achete = $montrer_achetes && in_array($d, $_SESSION['user']->sharedDevis);
 				$achete =  $c_achete ? ' class="achete"' : '';
-
-				echo "\t<tr$achete><td><a href=\"$url\">", htmlspecialchars($d['cp']),
-					 "</a></td><td><a href=\"$url\">", htmlspecialchars($c[0]),
-					 ' - ', htmlspecialchars($sc),
-					 "</a></td><td>";
-					 
-				if ($c_achete) echo '<span class="badge badge-info">Acheté</span> &nbsp;';	
+				$hdate = AbstractView::formateDate($d['date_creation']);
+				$hdate_code = $d['date_creation'] ? intval($d['date_creation']) : 0;
+				$id = $d->getID();
+				$hcp = htmlspecialchars($d['cp']);
+				$hcat = htmlspecialchars($c[0]).' <br/> '.htmlspecialchars($sc);
+				$hsujet = wordwrap(htmlspecialchars($d['sujet']),30, "<br/>", true);
+				$hbudget = htmlspecialchars($d['budget']);
 				
-				echo "<a href=\"$url\">", wordwrap(htmlspecialchars($d['sujet']),60, "<br/>", true),
-					"</a></td><td><a href=\"$url\">", htmlspecialchars($d['budget']),
-					 "</a></td></tr>\n";
+				echo <<<END
+	<tr$achete>
+		<td><a href="$url">
+			<span class="badge badge-info">$id</span>
+END;
+				if ($c_achete) echo '&nbsp;<span class="badge badge-warning">Acheté</span>';	
+				echo <<<END
+		</a></td>
+		<td>
+			<span style="display:none;">$hdate_code</span>
+			<a href="$url">$hdate</a>
+		</td>
+		<td><a href="$url">$hcp</a></td>
+		<td><a href="$url">$hcat</a></td>
+		<td><a href="$url">$hsujet</a></td>
+		<td><a href="$url">$hbudget</a></td>
+	</tr>
+END;
 			}
 
 			echo "</tbody></table>";

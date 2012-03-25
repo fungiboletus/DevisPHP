@@ -1,0 +1,68 @@
+/*Tooltips*/
+div > .tooltip, li > .tooltip, a > .tooltip, span > .tooltip {
+	opacity: 0;
+	margin-top:-380px;
+	margin-left: 370px;	
+	visibility: hidden;
+	width:0px;
+}
+
+div:hover > .tooltip, li:hover > .tooltip, a:hover > .tooltip, span:hover > .tooltip,
+a .tooltip:hover, span .tooltip:hover, li .tooltip:hover, div .tooltip:hover {
+	opacity: 1;
+	visibility: visible;/*pour rendre visible: visible*/
+	overflow: visible;
+	margin-top: 65px;
+	margin-left: -95px;	
+	width:80px;
+	display: inline;
+}
+
+.tooltip {
+	background-color:#F90;
+	border: 1px solid #393939;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+	padding: 2px;
+	margin-left: -40px;
+	position: absolute;
+	text-align:center;
+	font-size: 20px;
+	text-decoration: none;
+	font-style: normal;
+	color: #fff;
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 #3f3f3f;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 #3f3f3f;
+	-o-box-shadow: 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 #3f3f3f;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.1), inset 0 1px 0 #3f3f3f;
+	z-index: 10;
+	left: 96px;
+}
+
+.tooltip span { /* Triangle */
+	background:#F90;
+
+	border: 0;
+	border-top: 1px solid #F90;
+	border-right: 1px solid #F90;	
+
+	width: 5px;
+	height: 5px;
+	margin-left: 34px;
+	margin-top: -4px;
+	
+	display: block;
+	position: absolute;
+
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	
+	
+	display /*\**/: none\9;
+	*display: none !important;
+	*display: none;
+}

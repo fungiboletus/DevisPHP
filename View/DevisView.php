@@ -113,6 +113,10 @@ class DevisView {
 
 		$disabled = $adisabled ? ' disabled' : '';
 
+		$requis = $adisabled ? '' : '<span class="add-on">Requis</span>';
+		$c_requis = $adisabled ? '' : ' class="input-append"'; 
+
+
 		$url_submit = CNavigation::generateUrlToApp('Devis', 'submit');
 		echo "<form action=\"$url_submit\" name=\"registration_form\" method=\"post\" class=\"form-horizontal\">\n";
 
@@ -126,7 +130,9 @@ class DevisView {
 	<div class="control-group">
 		<label for="input_sujet" class="control-label">Sujet</label>
 		<div class="controls">
-			<input name="sujet" id="input_sujet" type="text" autofocus class="span6" value="{$values['sujet']}" maxlength="80"$disabled/>
+			<div$c_requis>
+				<input name="sujet" id="input_sujet" type="text" autofocus class="span6" value="{$values['sujet']}" maxlength="80"$disabled/>$requis
+			</div>
 		</div>
 	</div>
 	<div class="control-group">
@@ -248,7 +254,9 @@ if (!$masquer_infos)
 	<div class="control-group">
 		<label for="input_nom" class="control-label">Nom et Prénom</label>
 		<div class="controls">
-			<input name="nom" id="input_nom" type="text" required class="span4" value="{$values['nom']}" maxlength="80"$disabled/>
+			<div$c_requis>
+				<input name="nom" id="input_nom" type="text" required class="span4" value="{$values['nom']}" maxlength="80"$disabled/>$requis
+			</div>
 		</div>
 	</div>
 END;
@@ -284,7 +292,8 @@ else
 	<div class="control-group$class_error">
 		<label for="input_mail" class="control-label">Adresse email</label>
 		<div class="controls">
-			<input name="mail" id="input_mail" type="email" required class="span4" value="{$values['mail']}"$autofocus_error maxlength="80"$disabled/>
+			<div class="input-append">
+				<input name="mail" id="input_mail" type="email" required class="span4" value="{$values['mail']}"$autofocus_error maxlength="80"$disabled/>
 END;
 		if (isset($_SESSION['logged']) && strlen($values['mail']) > 0)
 		{
@@ -292,14 +301,21 @@ END;
 			htmlspecialchars($values['nom']),
 			rawurlencode(' <'.$values['mail'].'>'),"\" class=\"btn btn-inverse\">Envoyer un email</a>\n";
 		}
+		
+		if (!$adisabled)
+			echo '<span class="add-on">Requise</span>';
+
 		echo <<<END
+			</div>
 			<p class="help-block">Veuillez entrer une adresse email valide. Elle sera utilisée pour vous proposer les offres de devis.</p>
 		</div>
 	</div>
 	<div class="control-group">
 		<label for="input_tel" class="control-label">Téléphone</label>
 		<div class="controls">
-			<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80" required$disabled/>
+			<div$c_requis>
+				<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80" required$disabled/>$requis
+			</div>
 		</div>
 	</div>
 END;

@@ -95,7 +95,8 @@ else {
 	}
 	else {
 		header ('Content-Type: text/html; charset=utf-8');
-		require('View/template.php');
+
+		require('View/'.(isset($PREFIX_VIEW) ? $PREFIX_VIEW : '').'template.php');
 	}
 }
 ?>

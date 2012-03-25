@@ -21,7 +21,7 @@ class User
 		unset($props['sharedDevis']);
 
 		CNavigation::setTitle('Visualisation de l\'utilisateur numéro '.$user->getID());
-		UserView::showForm($props, !$_SESSION['user']->isAdmin, file_exists('PDF/'.sha1($user->mail).'.pdf'));
+		UserView::showForm($props, $_SESSION['user']->isAdmin, file_exists('PDF/'.sha1($user->mail).'.pdf'));
 	}
 
 	public function liste()

@@ -20,6 +20,13 @@ class Devis
 			'mail' => '',
 			'tel' => '');
 
+	protected function design_de()
+	{
+		$GLOBALS['PREFIX_VIEW'] = 'de_';
+		CHead::delCSS('application');
+		CHead::addCSS('DevisEquitable');
+	}
+
 	public function categories() {
 		if (isset($_REQUEST['cat']))
 		{
@@ -43,6 +50,8 @@ class Devis
 		}
 		else
 		{
+			$this->design_de();
+
 			CNavigation::setTitle(_('Nouvelle demande de devis'));
 
 			DevisView::showForm(isset($_SESSION['devis_submit']) ? $_SESSION['devis_submit'] : self::$variables);
@@ -106,7 +115,7 @@ class Devis
 			}
 		}
 
-		if (CNavigation::isValidSubmit(array('type', 'sujet', 'nom','mail'), $_POST))
+		if (CNavigation::isValidSubmit(array('type', 'sujet', 'nom','mail', 'tel'), $_POST))
 		{
 			$values = array_merge(self::$variables, $_POST);
 			
@@ -199,6 +208,7 @@ class Devis
 			CNavigation::redirectToApp('Devis');
 		}
 		unset($_SESSION['enregistrement_ok']);
+		$this->design_de();
 		CNavigation::setTitle(_('Enregistrement réussi'));
 		DevisView::showBoutonNouveauDevis();
 	}

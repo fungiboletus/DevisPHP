@@ -2,14 +2,12 @@
 class UserView
 {
 
-	public static function showForm($values = array(), $adisabled = false, $pdf = false)
+	public static function showForm($values = array(), $show_admin = false, $pdf = false)
 	{
 		$values = array_map('htmlspecialchars', $values); // <3
 
 		$url_submit = CNavigation::generateUrlToApp('User', 'submit');
 		echo "<form action=\"$url_submit\" name=\"user_form\" method=\"post\" class=\"form-horizontal\" enctype=\"multipart/form-data\">\n";
-
-		$disabled = $adisabled ? ' disabled' : '';
 
 		echo <<<END
 		<input type="hidden" name="id" value="{$values['id']}"/>
@@ -69,6 +67,11 @@ echo <<<END
 			<p class="help-block">Ce dossier sera envoyé de manière automatique aux clients pour vous présenter. Le document doit être au format PDF, et ne dois pas dépasser 2Mio. Laissez vide pour garder le même support de présentation.</p>
 		</div>
 	</div>
+</fieldset>
+END;
+if ($show_admin)
+{
+echo <<<END
 <fieldset>
 	<legend>Administration</legend>
 	<div class="control-group">
@@ -76,29 +79,28 @@ echo <<<END
 		<div class="controls">
 			<div class="input-prepend">
                 <span class="add-on">€</span>
-				<input name="credit" id="input_credit" type="number" class="span2" value="{$values['credit']}" $disabled/>
+				<input name="credit" id="input_credit" type="number" class="span2" value="{$values['credit']}"/>
 			</div>
 		</div>
 	</div>
 	<div class="control-group">
 		<label for="input_deps" class="control-label">Départements autorisés</label>
 		<div class="controls">
-			<input name="deps" id="input_deps" type="text" class="span6" value="{$values['deps']}" $disabled/>
-END;
-if (!$adisabled) echo '<p class="help-block">Entrez les numéros de départements séparés par des virgules. Laissez vide pour tout accepter.</p>';
-echo <<<END
+			<input name="deps" id="input_deps" type="text" class="span6" value="{$values['deps']}" />
+			<p class="help-block">Entrez les numéros de départements séparés par des virgules. Laissez vide pour tout accepter.</p>
 		</div>
 	</div>
 	<div class="control-group">
 		<label for="input_cats" class="control-label">Catégories autorisés</label>
 		<div class="controls">
-			<input name="cats" id="input_cats" type="text" class="span6" value="{$values['cats']}" $disabled/>
-END;
-if (!$adisabled) echo '<p class="help-block">Entrez les numéros des catégories séparées par des virgules. Laissez vide pour tout accepter.</p>';
-echo <<<END
+			<input name="cats" id="input_cats" type="text" class="span6" value="{$values['cats']}"/>
+			<p class="help-block">Entrez les numéros des catégories séparées par des virgules. Laissez vide pour tout accepter.</p>
 		</div>
 	</div>
 </fieldset>
+END;
+}
+echo <<<END
 	<div class="form-actions">
 		<input type="submit" class="btn btn-large btn-primary" value="Mettre à jour les informations"/>
 	</div>

@@ -122,17 +122,11 @@ class DevisView {
 
 		echo <<<END
 <fieldset>
-	<legend>Demande</legend>
+	<legend>Votre projet</legend>
 	<div class="control-group">
 		<label for="input_sujet" class="control-label">Sujet</label>
 		<div class="controls">
 			<input name="sujet" id="input_sujet" type="text" autofocus class="span6" value="{$values['sujet']}" maxlength="80"$disabled/>
-		</div>
-	</div>
-	<div class="control-group">
-		<label for="input_description" class="control-label">Description</label>
-		<div class="controls">
-			<textarea name="description" id="input_description" class="span6" rows="5"$disabled>{$values['description']}</textarea>
 		</div>
 	</div>
 	<div class="control-group">
@@ -148,9 +142,6 @@ END;
 		echo <<<END
 		</div>
 	</div>
-</fieldset>
-<fieldset>
-	<legend>Informations ?</legend>
 	<div class="control-group">
 		<label for="input_delai" class="control-label">Délai prévu</label>
 		<div class="controls">
@@ -241,9 +232,15 @@ END;
 		</div>
 	</div>
 
+	<div class="control-group">
+		<label for="input_description" class="control-label">Description complémentaire</label>
+		<div class="controls">
+			<textarea name="description" id="input_description" class="span6" rows="5"$disabled>{$values['description']}</textarea>
+		</div>
+	</div>
 </fieldset>
 <fieldset>
-	<legend>Coordonées</legend>
+	<legend>Vos coordonnées</legend>
 END;
 if (!$masquer_infos)
 {
@@ -281,8 +278,7 @@ END;
 else
 {
 	$class_error = isset($_SESSION['mail_error']) ? ' error' : '';
-	$msg_error = isset($_SESSION['mail_error']) ? 'Veuillez entrer une adresse email valide. Elle sera utilisée pour vous proposer les offres de devis.' : '';
-	$autofocus_error = isset($_SESSION['mail_error']) ? ' autofocus' : 'L\'adresse email sera utilisée pour vous proposer les offres de devis.';
+	$autofocus_error = isset($_SESSION['mail_error']) ? ' autofocus' : '';
 
 	echo <<<END
 	<div class="control-group$class_error">
@@ -297,13 +293,13 @@ END;
 			rawurlencode(' <'.$values['mail'].'>'),"\" class=\"btn btn-inverse\">Envoyer un email</a>\n";
 		}
 		echo <<<END
-			<p class="help-block">$msg_error</p>
+			<p class="help-block">Veuillez entrer une adresse email valide. Elle sera utilisée pour vous proposer les offres de devis.</p>
 		</div>
 	</div>
 	<div class="control-group">
 		<label for="input_tel" class="control-label">Téléphone</label>
 		<div class="controls">
-			<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80"$disabled/>
+			<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80" required$disabled/>
 		</div>
 	</div>
 END;
@@ -344,8 +340,9 @@ END;
 	}
 
 	public static function showBoutonNouveauDevis() {
+	$url = CNavigation::generateUrlToApp('Devis');
 	echo <<<END
-	<a href="" class="btn btn-primary btn-large">Nouvelle demande de devis</a>
+	<a href="$url" class="btn btn-primary btn-large">Nouvelle demande de devis</a>
 END;
 	}
 	

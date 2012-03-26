@@ -297,12 +297,12 @@ else
 END;
 		if (isset($_SESSION['logged']) && strlen($values['mail']) > 0)
 		{
-			echo "\t\t\t<a href=\"mailto:",
+			echo "<a href=\"mailto:",
 			htmlspecialchars($values['nom']),
 			rawurlencode(' <'.$values['mail'].'>'),"\" class=\"btn btn-inverse\">Envoyer un email</a>\n";
 		}
 		
-		if (!$adisabled)
+		if (!$adisabled )
 			echo '<span class="add-on">Requise</span>';
 
 		echo <<<END

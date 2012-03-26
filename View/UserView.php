@@ -29,7 +29,7 @@ class UserView
 		<label for="input_password" class="control-label">Mot de passe</label>
 		<div class="controls">
 			<input name="password" id="input_password" type="password" class="span6" value="******" maxlength="80"/>
-			<p class="help-block">Laissez vide pour garder le mot de passe identique.</p>
+			<p class="help-block">Laissez identique pour garder l'ancien mot de passe.</p>
 		</div>
 	</div>
 </fieldset>

@@ -115,7 +115,7 @@ class Devis
 			}
 		}
 
-		if (CNavigation::isValidSubmit(array('type', 'sujet', 'nom','mail', 'tel'), $_POST))
+		if (CNavigation::isValidSubmit(array('type', 'nom','mail', 'tel'), $_POST))
 		{
 			$values = array_merge(self::$variables, $_POST);
 			
@@ -131,6 +131,9 @@ class Devis
 			$devis->etape = $etape_nouveau_devis;
 
 			$devis->sujet = $values['sujet'];
+			if (strlen($devis->sujet) === 0)
+				$devis->sujet = 'Pas de sujet';
+
 			$devis->description = $values['description'];
 			$type = $values['type'];
 			$subtype = $values['subtype'];

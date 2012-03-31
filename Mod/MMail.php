@@ -28,6 +28,8 @@ class MMail
 
 	public static function send($mail)
 	{
+		if (!ENABLE_MAILS) return;
+
 		if (self::$_mmail_mailer === null)
 			self::_mmail_initialize_tm();
 

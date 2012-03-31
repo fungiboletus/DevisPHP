@@ -113,10 +113,6 @@ class DevisView {
 
 		$disabled = $adisabled ? ' disabled' : '';
 
-		$requis = $adisabled ? '' : '<span class="add-on">Requis</span>';
-		$c_requis = $adisabled ? '' : ' class="input-append"'; 
-
-
 		$url_submit = CNavigation::generateUrlToApp('Devis', 'submit');
 		echo "<form action=\"$url_submit\" name=\"registration_form\" method=\"post\" class=\"form-horizontal\">\n";
 
@@ -127,14 +123,20 @@ class DevisView {
 		echo <<<END
 <fieldset>
 	<legend>Votre projet</legend>
+END;
+	if ($mode !== 'nouveau') {
+		echo <<<END
 	<div class="control-group">
 		<label for="input_sujet" class="control-label">Sujet</label>
 		<div class="controls">
-			<div$c_requis>
-				<input name="sujet" id="input_sujet" type="text" autofocus class="span6" value="{$values['sujet']}" maxlength="80"$disabled/>$requis
+			<div>
+				<input name="sujet" id="input_sujet" type="text" autofocus class="span6" value="{$values['sujet']}" maxlength="80"$disabled/>
 			</div>
 		</div>
 	</div>
+END;
+	}
+		echo <<<END
 	<div class="control-group">
 		<label for="input_type" class="control-label">Catégorie</label>
 		<div class="controls">
@@ -254,8 +256,8 @@ if (!$masquer_infos)
 	<div class="control-group">
 		<label for="input_nom" class="control-label">Nom et Prénom</label>
 		<div class="controls">
-			<div$c_requis>
-				<input name="nom" id="input_nom" type="text" required class="span4" value="{$values['nom']}" maxlength="80"$disabled/>$requis
+			<div>
+				<input name="nom" id="input_nom" type="text" required class="span4" value="{$values['nom']}" maxlength="80"$disabled/>
 			</div>
 		</div>
 	</div>
@@ -288,23 +290,23 @@ else
 	$class_error = isset($_SESSION['mail_error']) ? ' error' : '';
 	$autofocus_error = isset($_SESSION['mail_error']) ? ' autofocus' : '';
 
+	$mail_button = isset($_SESSION['logged']) && strlen($values['mail']) > 0;
+	$class_mail_button = $mail_button ? ' class="input-append"' : '';
+
 	echo <<<END
 	<div class="control-group$class_error">
 		<label for="input_mail" class="control-label">Adresse email</label>
 		<div class="controls">
-			<div class="input-append">
+			<div$class_mail_button>
 				<input name="mail" id="input_mail" type="email" required class="span4" value="{$values['mail']}"$autofocus_error maxlength="80"$disabled/>
 END;
-		if (isset($_SESSION['logged']) && strlen($values['mail']) > 0)
+		if ($mail_button)
 		{
 			echo "<a href=\"mailto:",
 			htmlspecialchars($values['nom']),
 			rawurlencode(' <'.$values['mail'].'>'),"\" class=\"btn btn-inverse\">Envoyer un email</a>\n";
 		}
 		
-		if (!$adisabled )
-			echo '<span class="add-on">Requise</span>';
-
 		echo <<<END
 			</div>
 			<p class="help-block">Veuillez entrer une adresse email valide. Elle sera utilisée pour vous proposer les offres de devis.</p>
@@ -313,8 +315,8 @@ END;
 	<div class="control-group">
 		<label for="input_tel" class="control-label">Téléphone</label>
 		<div class="controls">
-			<div$c_requis>
-				<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80" required$disabled/>$requis
+			<div>
+				<input name="tel" id="input_tel" type="tel" class="span4" value="{$values['tel']}" maxlength="80" required$disabled/>
 			</div>
 		</div>
 	</div>
@@ -338,6 +340,8 @@ END;
 			break;
 
 		case 'admin':
+			echo "\t\t", '<input type="submit" class="btn btn-large btn-primary" name="submit" value="Enregistrer" />', "\n";
+
 			if ($valider == 0)
 			{
 				echo "\t\t", '<input type="submit" class="btn btn-large btn-success" name="submit" value="Valider" />', "\n";
@@ -348,7 +352,6 @@ END;
 				echo "\t\t", '<input type="submit" class="btn btn-large btn-warning" name="submit" value="Invalider" />', "\n";
 			}
 
-			echo "\t\t", '<input type="submit" class="btn btn-large btn-primary" name="submit" value="Enregistrer" />', "\n";
 			break;
 
 		}

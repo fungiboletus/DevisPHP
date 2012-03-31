@@ -14,23 +14,6 @@ class Dashboard
 		}
 	}
 
-	public function test_mail() {
-		$mail = MMail::newMail()
-
-		->setSubject('Your subject')
-
-  // Set the From address with an associative array
-  ->setFrom(array('john@doe.com' => 'John Doe'))
-
-  // Give it a body
-  ->setBody('Here is the message itself')
-
-  // And optionally an alternative body
-  ->addPart('<q>Here is the message itself</q>', 'text/html');
-
-  		MMail::send($mail);
-	}
-	
 	public function view() {
 		if (isset($_REQUEST['cat'])) {
 			$d = new Devis();

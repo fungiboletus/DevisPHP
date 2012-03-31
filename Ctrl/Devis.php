@@ -54,7 +54,14 @@ class Devis
 
 			CNavigation::setTitle(_('Nouvelle demande de devis'));
 
-			DevisView::showForm(isset($_SESSION['devis_submit']) ? $_SESSION['devis_submit'] : self::$variables);
+			$params = isset($_SESSION['devis_submit']) ? $_SESSION['devis_submit'] : self::$variables;
+			if (isset($_REQUEST['categorie']))
+				$params['type'] = $_REQUEST['categorie'];
+			
+			if (isset($_REQUEST['dep']))
+				$params['dep'] = $_REQUEST['dep'];
+
+			DevisView::showForm($params);
 			unset($_SESSION['mail_error']);
 		}
 	}

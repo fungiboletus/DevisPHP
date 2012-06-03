@@ -5,7 +5,7 @@ class User
 	public function index()
 	{
 		$this->view($_SESSION['user']);
-		CNavigation::setTitle('Informations de votre profil');
+		CNavigation::setTitle(_('Informations de votre profil'));
 	}
 
 	public function view($user = null)
@@ -20,7 +20,7 @@ class User
 		$props = $user->getProperties();
 		unset($props['sharedDevis']);
 
-		CNavigation::setTitle('Visualisation de l\'utilisateur numéro '.$user->getID());
+		CNavigation::setTitle(_('Visualisation de l\'utilisateur numéro ').$user->getID());
 		UserView::showForm($props, $_SESSION['user']->isAdmin, file_exists('PDF/'.sha1($user->mail).'.pdf'));
 	}
 
@@ -28,7 +28,7 @@ class User
 	{
 		if (!$_SESSION['user']->isAdmin) CTools::hackError();
 
-		CNavigation::setTitle('Liste des utilisateurs');
+		CNavigation::setTitle(_('Liste des utilisateurs'));
 
 		UserView::showList(R::find('user'));
 	}
@@ -80,12 +80,12 @@ class User
 				{
 					if (!move_uploaded_file($_FILES['pdf']['tmp_name'], 'PDF/'.sha1($user->mail).'.pdf')) {
 				
-						new CMessage('Impossible d\'enregistrer le fichier pdf.','error');
+						new CMessage(_('Impossible d\'enregistrer le fichier pdf.'),'error');
 					}
 				}
 				else
 				{
-					new CMessage('Le fichier n\'est pas de type pdf (selon votre navigateur)', 'error');
+					new CMessage(_('Le fichier n\'est pas de type pdf (selon votre navigateur)'), 'error');
 				}
 
 			}
@@ -95,21 +95,21 @@ class User
 				{
 					case UPLOAD_ERR_INI_SIZE:
 					case UPLOAD_ERR_FORM_SIZE:
-						new CMessage('Le fichier est trop gros.', 'error');
+						new CMessage(_('Le fichier est trop gros.'), 'error');
 						break;
 					case UPLOAD_ERR_PARTIAL:
-						new CMessage('Le fichier n\'a pas totalement été envoyé.','error');
+						new CMessage(_('Le fichier n\'a pas totalement été envoyé.'),'error');
 						break;
 					case UPLOAD_ERR_NO_FILE:
 						// Le comportement de base
 						break;
 					default:
-						new CMessage('Une erreur inconnue a été détectée pour le fichier pdf.', 'error');
+						new CMessage(_('Une erreur inconnue a été détectée pour le fichier pdf.'), 'error');
 				}
 			}
 		}
 
-		new CMessage('Enregistrement effectué');
+		new CMessage(_('Enregistrement effectué'));
 		
 		// Mise à jour de l'utilisateur dans la session aussi
 		if (!$admin)

@@ -3,7 +3,7 @@
 class Dashboard
 {
 	public function index() {
-		CNavigation::setTitle('Tableau de bord');
+		CNavigation::setTitle(_('Tableau de bord'));
 		DashboardView::showInfosCredit($_SESSION['user']->credit);
 		$devis = $_SESSION['user']->sharedDevis;
 
@@ -26,7 +26,7 @@ class Dashboard
 			$id = $devis->getId();
 			if (!$id) CTools::hackError();
 
-			CNavigation::setTitle("Devis numéro $id");
+			CNavigation::setTitle(_("Devis numéro $id"));
 			if ($devis->date_creation)
 				CNavigation::setDescription(AbstractView::formateDate($devis->date_creation));
 
@@ -38,13 +38,13 @@ class Dashboard
 
 			if ($devis->nb_achats >= NB_ACHATS_MAX && !$admin && !$achete)
 			{
-				new CMessage('Désolé, mais cette demande de devis n\'est pas disponible actuellement.', 'error');
+				new CMessage(_('Désolé, mais cette demande de devis n\'est pas disponible actuellement.'), 'error');
 				CNavigation::redirectToApp('Dashboard', 'liste');
 			}
 			
 			if ($admin && $devis->nb_achats > 0)
 			{
-				echo "<h3>Liste des utilisateurs ayant acheté cette demande de devis</h3>\n<br/>\n";
+				echo '<h3>', _('Liste des utilisateurs ayant acheté cette demande de devis'),"</h3>\n<br/>\n";
 				UserView::showList(R::related($devis, 'user'));
 			}
 
@@ -74,15 +74,15 @@ class Dashboard
 		if (isset($_REQUEST['confirmer']))
 		{
 			if (in_array($devis, $_SESSION['user']->sharedDevis)) {
-				new CMessage('Vous avez déjà acheté ce devis', 'error');
+				new CMessage(_('Vous avez déjà acheté ce devis'), 'error');
 			}
 			elseif ($_SESSION['user']->credit < COUT_ACHAT)
 			{
-				new CMessage('Désolé, mais vous n\'avez pas assez de crédits.', 'error');
+				new CMessage(_('Désolé, mais vous n\'avez pas assez de crédits.'), 'error');
 			}
 			elseif ($devis->nb_achats >= NB_ACHATS_MAX)
 			{
-				new CMessage('Désolé, mais il n\'est plus possible d\'acheter cette demande de devis', 'error');
+				new CMessage(_('Désolé, mais il n\'est plus possible d\'acheter cette demande de devis'), 'error');
 			}
 			else
 			{
@@ -91,16 +91,16 @@ class Dashboard
 				R::store($_SESSION['user']);
 				$devis->nb_achats += 1;
 				R::store($devis);
-				new CMessage('Félicitations pour votre achat. Le client a reçu un mail présentant votre entreprise comme vous l\'avez demandé.');
+				new CMessage(_('Félicitations pour votre achat. Le client a reçu un mail présentant votre entreprise comme vous l\'avez demandé.'));
 
 				$company = $_SESSION['user']->company ? $_SESSION['user']->company : $_SESSION['user']->name; 
 				$website = $_SESSION['user']->website ? ' ('.$_SESSION['user']->website.')' : '';
 				$telephone = $_SESSION['user']->tel ? "\n\nTéléphone: ".$_SESSION['user']->tel : '';
 
-				$body = "Votre demande de devis sur Devis Équitable a été sélectionnée par l\'entreprise $company$website.";
+				$body = _("Votre demande de devis sur Devis Équitable a été sélectionnée par l\'entreprise $company$website.");
 			
 				$mail = MMail::newMail()
-					->setSubject('Votre demande de devis a été sélectionnée par «'.$company.'»')
+					->setSubject(_('Votre demande de devis a été sélectionnée par «'.$company.'»'))
 					->setTo(array($devis->mail => $devis->nom));
 
 				$chemin_pdf = 'PDF/'.sha1($_SESSION['user']->mail).'.pdf';
@@ -109,7 +109,7 @@ class Dashboard
 					$mail->attach(
 						Swift_Attachment::fromPath($chemin_pdf)->setFilename('Presentation.pdf')
 					);
-					$body .= ' Vous trouverez une présentation en pièce jointe.';
+					$body .= _(' Vous trouverez une présentation en pièce jointe.');
 				}
 
 				$mail->setBody($body.$telephone);
@@ -120,7 +120,7 @@ class Dashboard
 		}
 		else
 		{
-			CNavigation::setTitle('Achat d\'une demande de devis');
+			CNavigation::setTitle(_('Achat d\'une demande de devis'));
 			call_user_func(array('AchatView',
 				$_SESSION['user']->credit < COUT_ACHAT ?
 					'showInfoManqueCredit' : 'showConfirmationAchat'),
@@ -178,6 +178,7 @@ class Dashboard
 		if ($subtype !== '*') $query .= " and subtype = $subtype";
 		if ($dep !== '*') $query .= " and dep = $dep";
 		
+		// TODO installation
 		if (!$_SESSION['user']->isAdmin) $query .= " and (nb_achats < ".intval(NB_ACHATS_MAX)." OR EXISTS (SELECT * FROM devis_user WHERE devis.id = devis_user.devis_id AND devis_user.user_id = ".intval($_SESSION['user']->getID())."))";
 
 		DevisView::showFormSelectionList($type, $subtype, $dep);

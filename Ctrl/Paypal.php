@@ -4,7 +4,7 @@ class Paypal
 {
 	public function index()
 	{
-		CNavigation::setTitle('Rajouter du crédit à votre compte');
+		CNavigation::setTitle(_('Rajouter du crédit à votre compte'));
 		PaypalView::showInfos($_SESSION['user']->credit);
 		PaypalView::showForm();
 	}
@@ -29,12 +29,12 @@ class Paypal
 		$_SESSION['credit'] = $credit;
 
 		$ret = $r->doExpressCheckout(
-			$credit, 'Crédit Devis Équitable',
+			$credit, _('Crédit Devis Équitable'),
 			$url.CNavigation::generateUrlToApp('Paypal', 'retour'),
 			$url.CNavigation::generateUrlToApp('Paypal', 'annulation'),
 			'', 'EUR');
 		
-		CNavigation::setTitle('Erreur de paiement');
+		CNavigation::setTitle(_('Erreur de paiement'));
 		groaw($ret);
 	}
 
@@ -56,14 +56,14 @@ class Paypal
 			$_SESSION['user']->credit += $credit;
 			R::store($_SESSION['user']);
 
-			new CMessage('Félicitations pour votre achat de crédit');
-			new CMessage('Votre compte a été crédité de '.$credit.'€','warning');
+			new CMessage(_('Félicitations pour votre achat de crédit'));
+			new CMessage(_('Votre compte a été crédité de '.$credit.'€'),'warning');
 			$log->ok = true;
 			$log->credit = $credit;
 		}
 		else
 		{
-			new CMessage('Une erreur s\'est produite. N\'hésitez pas à contacter l\'administrateur en cas de problème. Les informations sur l\'erreur sont sauvegardées.', 'error');
+			new CMessage(_('Une erreur s\'est produite. N\'hésitez pas à contacter l\'administrateur en cas de problème. Les informations sur l\'erreur sont sauvegardées.'), 'error');
 			$log->ok = false;
 			$log->credit = $_SESSION['credit'];
 		}
@@ -75,7 +75,7 @@ class Paypal
 
 	public function annulation()
 	{
-		new CMessage('Vous avez annulé la commande de crédit.', 'error');
+		new CMessage(_('Vous avez annulé la commande de crédit.'), 'error');
 		CNavigation::redirectToApp('Paypal');
 	}
 
@@ -83,7 +83,7 @@ class Paypal
 	{
 		if (!$_SESSION['user']->isAdmin) CTools::hackError();
 		
-		CNavigation::setTitle('Journal des opérations Paypal');
+		CNavigation::setTitle(_('Journal des opérations Paypal'));
 
 		PaypalView::showList(R::find('paypal'));
 	}
@@ -94,7 +94,7 @@ class Paypal
 		$log = R::load('paypal', $_REQUEST['id']);
 		if (!$log->getID()) CTools::hackError();
 
-		CNavigation::setTitle('Visualisation d\'un log paypal');
+		CNavigation::setTitle(_('Visualisation d\'un log paypal'));
 	
 		PaypalView::showInfosLog($log);
 	}

@@ -4,8 +4,8 @@ define('NO_LOGIN_REQUIRED', true);
 class Registration
 {
 	public function index() {
-		CNavigation::setTitle('Enregistrement');
-		CNavigation::setDescription('Créez votre compte sans attendre !');
+		CNavigation::setTitle(_('Enregistrement'));
+		CNavigation::setDescription(_('Créez votre compte sans attendre !'));
 
 		RegistrationView::showForm();
 	}
@@ -39,7 +39,7 @@ class Registration
 
 			R::store($user);
 			
-			new CMessage('Inscription réussie');
+			new CMessage(_('Inscription réussie'));
 			$_SESSION['logged'] = true;
 			$_SESSION['user'] = $user;
 			CNavigation::redirectToApp('User');

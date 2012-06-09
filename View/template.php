@@ -68,6 +68,7 @@ END;
 
 				<ul class="dropdown-menu">
 					<li><a href="$url_help">Aide</a></li>
+					<li><a href="$url_user">Profil</a></li>
 					<!--<li><a href="$url_not_found">Une erreur 404</a></li>-->
 					<li class="divider"></li>
 					<li><a href="$url_logout">Déconnexion</a></li>

@@ -93,6 +93,9 @@ class Devis
 							->setTo(array($devis->mail => $devis->nom))
 							->setBody(_("Votre demande de devis a été validée par les administrateurs de Devis Equitable.\nNous allons sélectionner pour vous 3 artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
 						MMail::send($mail);
+				
+						$url = CNavigation::generateUrlToApp('Notifications', null, array('devis' => $devis->getID()));
+						new CMessage('<a href="'.$url.'"><h3>'._('Envoyer les notifications aux artisans.').'</h3></a>', 'info');
 						break;
 					case 'Invalider':
 						$devis->etape = 0;

@@ -2,7 +2,7 @@
 class UserView
 {
 
-	public static function showForm($values = array(), $show_admin = false, $pdf = false)
+	public static function showForm($values = array(), $is_admin = false)
 	{
 		$values = array_map('htmlspecialchars', $values); // <3
 
@@ -29,7 +29,7 @@ class UserView
 		<label for="input_password" class="control-label">Mot de passe</label>
 		<div class="controls">
 			<input name="password" id="input_password" type="password" class="span6" value="******" maxlength="80"/>
-			<p class="help-block">Laissez identique pour garder l'ancien mot de passe.</p>
+			<p class="help-block">Laissez identique pour garder l&apos;ancien mot de passe.</p>
 		</div>
 	</div>
 </fieldset>
@@ -54,13 +54,13 @@ class UserView
 		</div>
 	</div>
 	<div class="control-group">
-		<label for="input_pdf" class="control-label">Support de présentation</label>
+		<label for="input_presentation" class="control-label">Support de présentation</label>
 		<div class="controls">
-			<input name="pdf" id="input_pdf" type="file" class="span4" accept="application/pdf" maxlength="2097152"/>
+			<input name="presentation" id="input_presentation" type="file" class="span4" accept="application/pdf" maxlength="2097152"/>
 END;
-	if ($pdf)
+	if ($values['presentation'])
 	{
-		$url = $GLOBALS['ROOT_PATH'].'/PDF/'.sha1($values['mail']).'.pdf';
+		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['presentation'];
 		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
 	}
 echo <<<END
@@ -68,12 +68,54 @@ echo <<<END
 		</div>
 	</div>
 </fieldset>
-END;
-if ($show_admin)
-{
-echo <<<END
 <fieldset>
 	<legend>Administration</legend>
+	<div class="control-group">
+		<label for="input_kbis" class="control-label">KBIS</label>
+		<div class="controls">
+			<input name="kbis" id="input_kbis" type="file" class="span4" accept="application/pdf|image/*" maxlength="2097152"/>
+END;
+	if ($values['kbis'])
+	{
+		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['kbis'];
+		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
+	}
+echo <<<END
+			<p class="help-block">Le fichier doit être de type PDF, ou une image.</p>
+		</div>
+	</div>
+	<div class="control-group">
+		<label for="input_assurdec" class="control-label">Assurance décennale</label>
+		<div class="controls">
+			<input name="assurdec" id="input_assurdec" type="file" class="span4" accept="application/pdf|image/*" maxlength="2097152"/>
+END;
+	if ($values['assurdec'])
+	{
+		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['assurdec'];
+		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
+	}
+echo <<<END
+			<p class="help-block">Le fichier doit être de type PDF, ou une image.</p>
+		</div>
+	</div>
+	<div class="control-group">
+		<label for="input_pieceidentite" class="control-label">Pièce d&apos;identité</label>
+		<div class="controls">
+			<input name="pieceidentite" id="input_pieceidentite" type="file" class="span4" accept="application/pdf|image/*" maxlength="2097152"/>
+END;
+	if ($values['pieceidentite'])
+	{
+		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['pieceidentite'];
+		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
+	}
+
+echo <<<END
+			<p class="help-block">Le fichier doit être de type PDF, ou une image.</p>
+		</div>
+	</div>
+END;
+if ($is_admin) {
+echo <<<END
 	<div class="control-group">
 		<label for="input_credit" class="control-label">Crédit</label>
 		<div class="controls">
@@ -83,24 +125,44 @@ echo <<<END
 			</div>
 		</div>
 	</div>
-	<div class="control-group">
-		<label for="input_deps" class="control-label">Départements autorisés</label>
-		<div class="controls">
-			<input name="deps" id="input_deps" type="text" class="span6" value="{$values['deps']}" />
-			<p class="help-block">Entrez les numéros de départements séparés par des virgules. Laissez vide pour tout accepter.</p>
-		</div>
-	</div>
-	<div class="control-group">
-		<label for="input_cats" class="control-label">Catégories autorisés</label>
-		<div class="controls">
-			<input name="cats" id="input_cats" type="text" class="span6" value="{$values['cats']}"/>
-			<p class="help-block">Entrez les numéros des catégories séparées par des virgules. Laissez vide pour tout accepter.</p>
-		</div>
-	</div>
-</fieldset>
 END;
 }
 echo <<<END
+</fieldset>
+<fieldset>
+	<legend>Notifications</legend>
+	<p class="well">Sélectionnez les départements et les catégories pour lesquelles vous souhaitez recevoir des notifications lorsqu&apos;une nouvelle demande de devis est disponible.</p>
+	<div class="control-group multicolumns">
+		<label class="control-label">Départements</label>
+		<div class="controls">
+END;
+		$deps = json_decode($values['deps']);
+		foreach (Regions::$liste as $region => $departements) {
+			$hr = htmlspecialchars($region);
+			echo "\t\t\t<h4>$hr</h4>\n";
+			foreach ($departements as $id => $dep) {
+				$hd = htmlspecialchars($dep);
+				$checked = in_array($id, $deps) ? ' checked' : '';
+				echo "\t\t\t<label class=\"checkbox\"><input type=\"checkbox\" name=\"deps[]\" value=\"$id\"$checked/>$hd</label>\n";
+			}
+			echo "\t\t\t<hr/>\n";
+		}
+echo <<<END
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">Catégories</label>
+		<div class="controls">
+END;
+		$cats = json_decode($values['cats']);
+		foreach (Categories::$liste as $id => $c) {
+			$hc = htmlspecialchars($c[0]);
+			$checked = in_array($id, $cats) ? ' checked' : '';
+			echo "\t\t\t<label class=\"checkbox\"><input type=\"checkbox\" name=\"cats[]\" value=\"$id\"$checked/>$hc</label>\n";
+		}
+echo <<<END
+	</div>
+</fieldset>
 	<div class="form-actions">
 		<input type="submit" class="btn btn-large btn-primary" value="Mettre à jour les informations"/>
 	</div>

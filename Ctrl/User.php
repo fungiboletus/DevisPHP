@@ -146,7 +146,7 @@ class User
 		new CMessage(_('Enregistrement effectué'));
 		
 		// Mise à jour de l'utilisateur dans la session aussi
-		if (!$admin)
+		if (!$admin || $user->getID() == $_SESSION['user']->getID())
 		{
 			$_SESSION['user'] = $user;
 			CNavigation::redirectToApp('User');

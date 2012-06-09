@@ -34,7 +34,7 @@ class Paypal
 			$url.CNavigation::generateUrlToApp('Paypal', 'annulation'),
 			'', 'EUR');
 		
-		CNavigation::setTitle(_("Nous avons constaté une erreur de paiement.\nVeuillez recommencer l'opération\nSi vous pensez que le paiement a tout de même été effectué,\nprenez contact avec notre équipe");
+		CNavigation::setTitle(_("Nous avons constaté une erreur de paiement.\nVeuillez recommencer l'opération\nSi vous pensez que le paiement a tout de même été effectué,\nprenez contact avec notre équipe"));
 		groaw($ret);
 	}
 

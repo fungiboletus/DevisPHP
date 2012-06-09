@@ -58,7 +58,7 @@ class UserView
 		<div class="controls">
 			<input name="presentation" id="input_presentation" type="file" class="span4" accept="application/pdf" maxlength="2097152"/>
 END;
-	if ($values['presentation'])
+	if (isset($values['presentation']) && $values['presentation'])
 	{
 		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['presentation'];
 		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
@@ -75,7 +75,7 @@ echo <<<END
 		<div class="controls">
 			<input name="kbis" id="input_kbis" type="file" class="span4" accept="application/pdf|image/*" maxlength="2097152"/>
 END;
-	if ($values['kbis'])
+	if (isset($values['kbis']) && $values['kbis'])
 	{
 		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['kbis'];
 		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
@@ -89,7 +89,7 @@ echo <<<END
 		<div class="controls">
 			<input name="assurdec" id="input_assurdec" type="file" class="span4" accept="application/pdf|image/*" maxlength="2097152"/>
 END;
-	if ($values['assurdec'])
+	if (isset($values['assurdec']) && $values['assurdec'])
 	{
 		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['assurdec'];
 		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
@@ -103,7 +103,7 @@ echo <<<END
 		<div class="controls">
 			<input name="pieceidentite" id="input_pieceidentite" type="file" class="span4" accept="application/pdf|image/*" maxlength="2097152"/>
 END;
-	if ($values['pieceidentite'])
+	if (isset($values['pieceidentite']) && $values['pieceidentite'])
 	{
 		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['pieceidentite'];
 		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
@@ -137,6 +137,7 @@ echo <<<END
 		<div class="controls">
 END;
 		$deps = json_decode($values['deps']);
+		if ($deps == null) $deps = array();
 		foreach (Regions::$liste as $region => $departements) {
 			$hr = htmlspecialchars($region);
 			echo "\t\t\t<h4>$hr</h4>\n";
@@ -155,6 +156,7 @@ echo <<<END
 		<div class="controls">
 END;
 		$cats = json_decode($values['cats']);
+		if ($cats == null) $cats = array();
 		foreach (Categories::$liste as $id => $c) {
 			$hc = htmlspecialchars($c[0]);
 			$checked = in_array($id, $cats) ? ' checked' : '';

@@ -28,18 +28,18 @@ class User
 	{
 		if (!$_SESSION['user']->isAdmin) CTools::hackError();
 
-		CNavigation::setTitle(_('Liste des utilisateurs'));
+		CNavigation::setTitle(_('Liste des artisans'));
 
 		UserView::showList(R::find('user'));
 	}
 
 	public function submit()
 	{
-		groaw($_POST);
+		//groaw($_POST);
 		if (!CNavigation::isValidSubmit(array('id', 'name', 'mail', 'password', 'company', 'website', 'tel'), $_POST)) CTools::hackError();
 
 		if (!filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL)) {
-			new CMessage(_('Une adresse mail est demandée'), 'error');
+			new CMessage(_('Veuillez renseigner une adresse mail.'), 'error');
 			CNavigation::redirectToApp('User', 'view', array('id' => $_POST['id']));
 		}
 
@@ -95,7 +95,7 @@ class User
 				{
 					case UPLOAD_ERR_INI_SIZE:
 					case UPLOAD_ERR_FORM_SIZE:
-						new CMessage(_('Le fichier est trop gros.'), 'error');
+						new CMessage(_('Le fichier est trop voluminux.'), 'error');
 						break;
 					case UPLOAD_ERR_PARTIAL:
 						new CMessage(_('Le fichier n\'a pas totalement été envoyé.'),'error');

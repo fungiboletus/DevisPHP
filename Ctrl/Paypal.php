@@ -34,7 +34,7 @@ class Paypal
 			$url.CNavigation::generateUrlToApp('Paypal', 'annulation'),
 			'', 'EUR');
 		
-		CNavigation::setTitle(_('Erreur de paiement'));
+		CNavigation::setTitle(_("Nous avons constaté une erreur de paiement.\nVeuillez recommencer l'opération\nSi vous pensez que le paiement a tout de même été effectué,\nprenez contact avec notre équipe");
 		groaw($ret);
 	}
 
@@ -56,7 +56,7 @@ class Paypal
 			$_SESSION['user']->credit += $credit;
 			R::store($_SESSION['user']);
 
-			new CMessage(_('Félicitations pour votre achat de crédit'));
+			new CMessage(_('Votre règlement a bien été effectué.'));
 			new CMessage(_('Votre compte a été crédité de '.$credit.'€'),'warning');
 			$log->ok = true;
 			$log->credit = $credit;

@@ -27,7 +27,7 @@ class Session
 			}
 		}
 
-		new CMessage(_('Impossible de se connecter !!!'), 'error');
+		new CMessage(_('Impossible de se connecter'), 'error');
 		CNavigation::redirectToApp('Session');
 	}
 

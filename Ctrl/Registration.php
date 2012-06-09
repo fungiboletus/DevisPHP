@@ -14,7 +14,7 @@ class Registration
 	
 		if (CNavigation::isValidSubmit(array('nom', 'mail', 'password'), $_POST)) {
 			if (!filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL)) {
-				new CMessage(_('Une adresse mail est demandée'), 'error');
+				new CMessage(_('Veuillez renseigner votre adresse mail'), 'error');
 				CNavigation::redirectToApp('Registration');
 			}
 

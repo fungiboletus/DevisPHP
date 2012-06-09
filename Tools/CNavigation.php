@@ -3,7 +3,7 @@ class CNavigation
 {
 	public static function getTitle() {
 		global $PAGE_TITLE;
-		return isset($PAGE_TITLE) ? $PAGE_TITLE : _('Unknown title');
+		return isset($PAGE_TITLE) ? $PAGE_TITLE : _('Titre inconnu');
 	}
 	
 	public static function setTitle($title) {

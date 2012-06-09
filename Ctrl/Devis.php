@@ -89,9 +89,9 @@ class Devis
 						R::store($devis);
 						new CMessage(_('La demande de devis a été validée'));
 						$mail = MMail::newMail()
-							->setSubject(_('Votre demande de devis a été validée'))
+							->setSubject(_('Votre demande de devis a été validée sur devis-equitable.fr'))
 							->setTo(array($devis->mail => $devis->nom))
-							->setBody(_('Votre demande de devis sur Devis Équitable a été validée.'));
+							->setBody(_("Votre demande de devis a été validée par les administrateurs de Devis Equitable.\nNous allons sélectionner pour vous 3 artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
 						MMail::send($mail);
 						break;
 					case 'Invalider':
@@ -128,7 +128,7 @@ class Devis
 			
 			if (!filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL))
 			{
-				new CMessage(_('Une adresse mail correcte est demandée'), 'error');
+				new CMessage(_('Veuillez indiquer une adresse mail correcte.'), 'error');
 				$_SESSION['devis_submit'] = $values;
 				$_SESSION['mail_error'] = true;
 				CNavigation::redirectToApp('Devis');
@@ -191,8 +191,8 @@ class Devis
 				$mail = MMail::newMail()
 					->setSubject(_('Confirmation de la création de votre demande de devis.'))
   					->setTo(array($values['mail'] => $values['nom']))
-  					->setBody(_('Votre demande de devis a bien été prise en compte par notre application.'))
-					->addPart(_('Votre demande de devis a bien été prise en compte par notre application.'), 'text/html');
+  					->setBody(_("Votre demande de devis a bien été prise en compte.\nNous allons sélectionner pour vous trois artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
+					//->addPart(_('Votre demande de devis a bien été prise en compte par notre application.'), 'text/html');
 
 				MMail::send($mail);
 

@@ -38,13 +38,13 @@ class Dashboard
 
 			if ($devis->nb_achats >= NB_ACHATS_MAX && !$admin && !$achete)
 			{
-				new CMessage(_('Désolé, mais cette demande de devis n\'est pas disponible actuellement.'), 'error');
+				new CMessage(_('Demande de devis non disponible.'), 'error');
 				CNavigation::redirectToApp('Dashboard', 'liste');
 			}
 			
 			if ($admin && $devis->nb_achats > 0)
 			{
-				echo '<h3>', _('Liste des utilisateurs ayant acheté cette demande de devis'),"</h3>\n<br/>\n";
+				echo '<h3>', _('Artisans ayant acheté cette demande de devis'),"</h3>\n<br/>\n";
 				UserView::showList(R::related($devis, 'user'));
 			}
 
@@ -74,11 +74,11 @@ class Dashboard
 		if (isset($_REQUEST['confirmer']))
 		{
 			if (in_array($devis, $_SESSION['user']->sharedDevis)) {
-				new CMessage(_('Vous avez déjà acheté ce devis'), 'error');
+				new CMessage(_('Vous avez déjà acheté cette demande de devis'), 'error');
 			}
 			elseif ($_SESSION['user']->credit < COUT_ACHAT)
 			{
-				new CMessage(_('Désolé, mais vous n\'avez pas assez de crédits.'), 'error');
+				new CMessage(_('Désolé, mais votre solde de crédits est insuffisant pour acheter cette demande de devis.'), 'error');
 			}
 			elseif ($devis->nb_achats >= NB_ACHATS_MAX)
 			{
@@ -91,7 +91,7 @@ class Dashboard
 				R::store($_SESSION['user']);
 				$devis->nb_achats += 1;
 				R::store($devis);
-				new CMessage(_('Félicitations pour votre achat. Le client a reçu un mail présentant votre entreprise comme vous l\'avez demandé.'));
+				new CMessage(_("Votre achat a bien été effectué.\nLe client a reçu un mail présentant votre entreprise.\nNous vous encourageons à prendre contact et à envoyer votre devis dès que possible.\n\nMerci de votre confiance."));
 
 				$company = $_SESSION['user']->company ? $_SESSION['user']->company : $_SESSION['user']->name; 
 				$website = $_SESSION['user']->website ? ' ('.$_SESSION['user']->website.')' : '';
@@ -100,7 +100,7 @@ class Dashboard
 				$body = _("Votre demande de devis sur Devis Équitable a été sélectionnée par l\'entreprise $company$website.");
 			
 				$mail = MMail::newMail()
-					->setSubject(_('Votre demande de devis a été sélectionnée par «'.$company.'»'))
+					->setSubject(_('Un Votre demande de devis a été sélectionnée par l\'artisan «'.$company.'»'))
 					->setTo(array($devis->mail => $devis->nom));
 
 				$chemin_pdf = 'PDF/'.sha1($_SESSION['user']->mail).'.pdf';
@@ -134,7 +134,7 @@ class Dashboard
 		if ($_SESSION['user']->isAdmin) {
 			switch (isset($_REQUEST['etape']) ? $_REQUEST['etape'] : null) {
 				case 'validees':
-					CNavigation::setTitle(_('Liste des demandes validées'));
+					CNavigation::setTitle(_('Demandes validées'));
 					$etape = '= 1';
 					break;
 				case 'poubelle':
@@ -149,7 +149,7 @@ class Dashboard
 					break;
 				case 'validation':
 				default:
-					CNavigation::setTitle(_('Liste des demandes à valider'));
+					CNavigation::setTitle(_('Demandes à valider'));
 					$etape = '= 0';
 					break;
 			}
@@ -158,7 +158,7 @@ class Dashboard
 		}
 		else
 		{
-			CNavigation::setTitle(_('Liste des demandes'));
+			CNavigation::setTitle(_('Toutes les demandes'));
 			$etape = '= 1';
 		}
 

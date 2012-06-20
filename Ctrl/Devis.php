@@ -89,7 +89,7 @@ class Devis
 						R::store($devis);
 						new CMessage(_('La demande de devis a été validée'));
 						$mail = MMail::newMail()
-							->setSubject(_('Votre demande de devis a été validée sur devis-equitable.fr'))
+							->setSubject(_('Votre demande de devis a été validée sur devis-equitable.com'))
 							->setTo(array($devis->mail => $devis->nom))
 							->setBody(_("Votre demande de devis a été validée par les administrateurs de Devis Equitable.\nNous allons sélectionner pour vous 3 artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
 						MMail::send($mail);

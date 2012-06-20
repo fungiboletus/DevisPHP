@@ -56,9 +56,9 @@ class Registration
 		$url_inscription = CNavigation::generateUrlToApp('Registration', 'inscription', array('token' => $token));
 		
 		$mail = MMail::newMail()
-			->setSubject(_('Inscription sur devis-equitable.fr'))
+			->setSubject(_('Inscription sur devis-equitable.com'))
 			->setTo($_POST['mail'])
-			->setBody(_("Le formulaire d'inscription sur devis-equitable.fr est disponible à cette adresse : http://www.devis-equitable.fr").$url_inscription);
+			->setBody(_("Le formulaire d'inscription sur devis-equitable.com est disponible à cette adresse : http://www.devis-equitable.com").$url_inscription);
 		MMail::send($mail);
 
 		CNavigation::setTitle(_('Demande enregistrée'));

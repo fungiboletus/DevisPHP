@@ -29,7 +29,7 @@ class Notifications
 			{
 				$url_devis = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $id)); 
 				$mail = MMail::newMail()
-					->setSubject(_('Une nouvelle de demande de devis correspondant à vos critères est disponible sur devis-equitable.fr'))
+					->setSubject(_('Nouvelle demande de devis sur devis-equitable.fr'))
 					->setTo(array($user->mail => $devis->name))
 					->setBody(_("Une nouvelle demande de devis correspondant à vos critères de notifications est disponble sur devis-equitable.fr.\nVous trouverez plus d'informations à cette adresse : http://www.devis-equitable.fr").$url_devis._("\nSachez que vous pouvez modifier vos réglages de notifications à tout moment dans les paramètres de votre profil.\n\nMerci de votre confiance."));
 				MMail::send($mail);

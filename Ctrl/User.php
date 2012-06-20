@@ -26,7 +26,7 @@ class User
 			}
 			else
 			{
-				new CMessage(_('Le fichier ne possède pas un bon format de fichier.'), 'error');
+				new CMessage(_('Format PDF, PNG ou JPG seulement.'), 'error');
 				return;
 			}
 		

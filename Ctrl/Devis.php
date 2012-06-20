@@ -179,7 +179,7 @@ class Devis
 			}
 			else
 			{
-				new CMessage(_('Votre demande de devis a été enregistrée. Vous allez recevoir un mail de confirmation'));
+				new CMessage(_('Votre demande de devis a bien été enregistrée. Vous allez recevoir un mail de confirmation'));
 			
 				$_SESSION['enregistrement_ok'] = true;
 				
@@ -192,9 +192,9 @@ class Devis
 					'tel' => $values['tel']));
 
 				$mail = MMail::newMail()
-					->setSubject(_('Confirmation de la création de votre demande de devis.'))
+					->setSubject(_('Devis en attente de validation par un administrateur.'))
   					->setTo(array($values['mail'] => $values['nom']))
-  					->setBody(_("Votre demande de devis a bien été prise en compte.\nNous allons sélectionner pour vous trois artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
+  					->setBody(_("Bonjour,\n\nvotre demande de devis a bien été prise en compte.\nUn administrateur va prendre contact avec vous dans les plus brefs délais afin de valider votre demande puis sélectionner pour vous trois artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
 					//->addPart(_('Votre demande de devis a bien été prise en compte par notre application.'), 'text/html');
 
 				MMail::send($mail);

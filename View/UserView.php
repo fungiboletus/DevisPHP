@@ -9,6 +9,10 @@ class UserView
 		$url_submit = CNavigation::generateUrlToApp('User', 'submit');
 		echo "<form action=\"$url_submit\" name=\"user_form\" method=\"post\" class=\"form-horizontal\" enctype=\"multipart/form-data\">\n";
 
+		if (!isset($values['website']) || preg_match("#https?://#", $values['website']) === 0) {
+			$values['website'] = 'http://'.$values['website'];
+		}
+
 		echo <<<END
 		<input type="hidden" name="id" value="{$values['id']}"/>
 <fieldset>
@@ -63,8 +67,12 @@ END;
 		$url = $GLOBALS['ROOT_PATH'].'/Uploads/'.$values['presentation'];
 		echo "<a href=\"$url\" class=\"btn btn-inverse\">Télécharger le support enregistré</a>";
 	}
+	$mail_admin = $GLOBALS['mail_admin'];
+	reset($mail_admin);
+	$hmail_admin = htmlspecialchars(key($mail_admin));
 echo <<<END
 			<p class="help-block">Ce dossier sera envoyé de manière automatique aux clients pour vous présenter. Le document doit être au format PDF, et ne dois pas dépasser 2Mio. Laissez vide pour garder le même support de présentation.</p>
+	<p class="alert alert-info help-block">N'hésitez pas à nous <a href="mailto:$hmail_admin">demander de l'aide</a> pour réaliser votre support de présentation.</p>
 		</div>
 	</div>
 </fieldset>
@@ -131,7 +139,7 @@ echo <<<END
 </fieldset>
 <fieldset>
 	<legend>Notifications</legend>
-	<p class="well">Sélectionnez les départements et les catégories pour lesquelles vous souhaitez recevoir des notifications lorsqu&apos;une nouvelle demande de devis est disponible.</p>
+	<p class="alert alert-info">Sélectionnez les départements et les catégories pour lesquelles vous souhaitez recevoir des notifications lorsqu&apos;une nouvelle demande de devis est disponible.</p>
 	<div class="control-group multicolumns">
 		<label class="control-label">Départements</label>
 		<div class="controls">

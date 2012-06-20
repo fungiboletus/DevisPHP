@@ -110,6 +110,12 @@ class User
 		if ($_POST['password'] !== '******')
 			$user->password = sha1($_POST['password'].'grossel_devis');
 		$user->mail = $_POST['mail'];
+
+		// Ajout automatique des https
+		if (preg_match("#https?://#", $_POST['website']) === 0) {
+			$_POST['website'] = 'http://'.$_POST['website'];
+		}
+
 		$user->company = $_POST['company'];
 		$user->website = $_POST['website'];
 		$user->tel = $_POST['tel'];

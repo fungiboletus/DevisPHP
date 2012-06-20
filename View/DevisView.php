@@ -119,10 +119,13 @@ class DevisView {
 		if ($devis_id) {
 			echo "\t<input type=\"hidden\" name=\"devis_id\" value=\"",intval($devis_id),"\"/>\n";
 		}
+		
+		$legend_projet = $mode !== 'nouveau' ? _('Projet') : _('Votre projet'); 
+		$legend_coordonnees = $mode !== 'nouveau' ? _('Coordonnées') : _('Vos coordonnées'); 
 
 		echo <<<END
 <fieldset>
-	<legend>Votre projet</legend>
+	<legend>$legend_projet</legend>
 END;
 	if ($mode !== 'nouveau') {
 		echo <<<END
@@ -248,7 +251,7 @@ END;
 	</div>
 </fieldset>
 <fieldset>
-	<legend>Vos coordonnées</legend>
+	<legend>$legend_coordonnees</legend>
 END;
 if (!$masquer_infos)
 {

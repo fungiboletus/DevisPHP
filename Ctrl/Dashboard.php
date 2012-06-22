@@ -177,9 +177,11 @@ class Dashboard
 		if ($type !== '*') $query .= " and type = $type";
 		if ($subtype !== '*') $query .= " and subtype = $subtype";
 		if ($dep !== '*') $query .= " and dep = $dep";
-		
+	
+		$date_creation_max = time() - TEMPS_AFFICHAGE_DEVIS_ACHETES;
+
 		// TODO installation
-		if (!$_SESSION['user']->isAdmin) $query .= " and (nb_achats < ".intval(NB_ACHATS_MAX)." OR EXISTS (SELECT * FROM devis_user WHERE devis.id = devis_user.devis_id AND devis_user.user_id = ".intval($_SESSION['user']->getID())."))";
+		if (!$_SESSION['user']->isAdmin) $query .= " AND (nb_achats < ".intval(NB_ACHATS_MAX)." OR date_creation >= $date_creation_max OR EXISTS (SELECT * FROM devis_user WHERE devis.id = devis_user.devis_id AND devis_user.user_id = ".intval($_SESSION['user']->getID())."))";
 
 		DevisView::showFormSelectionList($type, $subtype, $dep);
 

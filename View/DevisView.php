@@ -392,7 +392,21 @@ END;
 				$sc = isset($c[1][$d['subtype']]) ? $c[1][$d['subtype']] : self::texte_categorie;
 
 				$c_achete = $montrer_achetes && in_array($d, $_SESSION['user']->sharedDevis);
-				$achete =  $c_achete ? ' class="achete"' : '';
+				$achete =  $c_achete ? 'achete ' : '';
+
+				if (!$_SESSION['user']->isAdmin && $d['nb_achats'] >= NB_ACHATS_MAX)
+				{
+					$complet = 'complet';
+					$a_begin = '';
+					$a_end = '';
+				}
+				else
+				{
+					$a_begin = "<a href=\"$url\">";
+					$a_end = '</a>';
+					$complet = '';
+				}
+
 				$hdate = AbstractView::formateDate($d['date_creation']);
 				$hdate_code = $d['date_creation'] ? intval($d['date_creation']) : 0;
 				$id = $d->getID();
@@ -402,22 +416,31 @@ END;
 				$hbudget = htmlspecialchars($d['budget']);
 				
 				echo <<<END
-	<tr$achete>
-		<td><a href="$url">
+	<tr class="$achete$complet">
+		<td>$a_begin
 			<span class="badge badge-info">$id</span>
 END;
 				if ($c_achete) echo '&nbsp;<span class="badge badge-warning">Acheté</span>';	
-				if ($_SESSION['user']->isAdmin && $d['nb_achats']) echo '&nbsp;<span class="badge badge-warning">',$d['nb_achats'],' achat',$d['nb_achats'] > 1 ? 's' : '','</span>';	
+				if ($_SESSION['user']->isAdmin)
+				{
+					if ($d['nb_achats']) echo '&nbsp;<span class="badge badge-warning">',$d['nb_achats'],' achat',$d['nb_achats'] > 1 ? 's' : '','</span>';
+				}
+				else if ($d['nb_achats'] >= NB_ACHATS_MAX)
+				{
+					echo '&nbsp;<span class="badge badge-inverse">Complet</span>';
+					$url = '#';
+				}
+
 				echo <<<END
-		</a></td>
+		$a_end</td>
 		<td>
 			<span style="display:none;">$hdate_code</span>
-			<a href="$url">$hdate</a>
+			$a_begin$hdate$a_end
 		</td>
-		<td><a href="$url">$hcp</a></td>
-		<td><a href="$url">$hcat</a></td>
-		<td><a href="$url">$hsujet</a></td>
-		<td><a href="$url">$hbudget</a></td>
+		<td>$a_begin$hcp$a_end</td>
+		<td>$a_begin$hcat$a_end</td>
+		<td>$a_begin$hsujet$a_end</td>
+		<td>$a_begin$hbudget$a_end</td>
 	</tr>
 END;
 			}

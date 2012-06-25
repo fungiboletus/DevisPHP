@@ -164,26 +164,51 @@ class Dashboard
 
 
 		$query = 'etape '.$etape;
+	
+		if (isset($_REQUEST['notifications']) && $_REQUEST['notifications'])
+		{
+
+			$deps = json_decode($_SESSION['user']->deps);
+			$cats = json_decode($_SESSION['user']->cats);
+
+			foreach ($deps as &$dep)
+				$dep = Regions::validerID($dep);
+			
+			$useless = 0;
+			foreach ($cats as &$cat)
+				Categories::validerIDs($cat, $useless); 
+			
+			if (!empty($deps))
+				$query .= ' and dep in ('.implode(',',$deps).')';
+			
+			if (!empty($cats))
+				$query .= ' and type in ('.implode(',',$cats).')';
+
+			DevisView::showNotificationsListInfos();
+		}
+		else
+		{
+			$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : -1;
+			$subtype = isset($_REQUEST['subtype']) ? $_REQUEST['subtype'] : -1;
+			$dep = Regions::validerID(isset($_REQUEST['dep']) ? $_REQUEST['dep'] : -1);
+			Categories::validerIDs($type, $subtype);
+
+			$type = (!isset($_REQUEST['type']) || $_REQUEST['type'] === '*') ? '*' : $type;
+			$subtype = (!isset($_REQUEST['subtype']) || $_REQUEST['subtype'] === '*') ? '*' : $subtype;
+			$dep = (!isset($_REQUEST['dep']) || $_REQUEST['dep'] === '*') ? '*' : $dep;
+
+			if ($type !== '*') $query .= " and type = $type";
+			if ($subtype !== '*') $query .= " and subtype = $subtype";
+			if ($dep !== '*') $query .= " and dep = $dep";
 		
-		$type = isset($_REQUEST['type']) ? $_REQUEST['type'] : -1;
-		$subtype = isset($_REQUEST['subtype']) ? $_REQUEST['subtype'] : -1;
-		$dep = Regions::validerID(isset($_REQUEST['dep']) ? $_REQUEST['dep'] : -1);
-		Categories::validerIDs($type, $subtype);
-
-		$type = (!isset($_REQUEST['type']) || $_REQUEST['type'] === '*') ? '*' : $type;
-		$subtype = (!isset($_REQUEST['subtype']) || $_REQUEST['subtype'] === '*') ? '*' : $subtype;
-		$dep = (!isset($_REQUEST['dep']) || $_REQUEST['dep'] === '*') ? '*' : $dep;
-
-		if ($type !== '*') $query .= " and type = $type";
-		if ($subtype !== '*') $query .= " and subtype = $subtype";
-		if ($dep !== '*') $query .= " and dep = $dep";
+			DevisView::showFormSelectionList($type, $subtype, $dep, false);
+		}
 	
 		$date_creation_max = time() - TEMPS_AFFICHAGE_DEVIS_ACHETES;
 
 		// TODO installation
 		if (!$_SESSION['user']->isAdmin) $query .= " AND (nb_achats < ".intval(NB_ACHATS_MAX)." OR date_creation >= $date_creation_max OR EXISTS (SELECT * FROM devis_user WHERE devis.id = devis_user.devis_id AND devis_user.user_id = ".intval($_SESSION['user']->getID())."))";
 
-		DevisView::showFormSelectionList($type, $subtype, $dep);
 
 		echo "</div>\n";
 		DevisView::showList(R::find('devis', $query));

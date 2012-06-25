@@ -138,7 +138,7 @@ END;
 echo <<<END
 </fieldset>
 <fieldset>
-	<legend>Notifications</legend>
+	<legend id="notifications">Notifications</legend>
 	<p class="alert alert-info">Sélectionnez les départements et les catégories pour lesquelles vous souhaitez recevoir des notifications lorsqu&apos;une nouvelle demande de devis est disponible.</p>
 	<div class="control-group multicolumns">
 		<label class="control-label">Départements</label>

@@ -45,7 +45,8 @@ END;
 		$url_logout = CNavigation::generateUrlToApp('Session', 'logout');
 		$url_help = CNavigation::generateUrlToApp('Help');
 		$url_not_found = CNavigation::generateUrlToApp('PageIntrouvable');
-		$url_demandes = CNavigation::generateUrlToApp('Dashboard','liste');
+		$url_demandes = CNavigation::generateUrlToApp('Dashboard','liste',
+			array('notifications' => true));
 		$c_data = $CTRL_NAME === 'Dashboard' && $ACTION_NAME === 'liste' ? ' class="active"' : '';
 		$c_dashboard = $CTRL_NAME === 'Dashboard' && $ACTION_NAME === 'index' ? ' class="active"' : '';
 

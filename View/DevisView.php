@@ -492,10 +492,17 @@ END;
 		'type' => '*',
 		'subtype' => '*',
 		'dep' => '*'));
+
+	$url_filtre_notifs = CNavigation::generateUrlToApp('Dashboard', 'liste', array('notifications' => true));
+
 	echo <<<END
 <form action="$action_form" name="selection_categories" method="get" class="form-horizontal">
 <fieldset>
 	<h4>Filtrer</h4>
+	<div class="control-group">
+		<a href="$url_filtre_notifs" class="btn btn-info">Filtrer selon vos critères de notifications</a>
+		<a href="$reset_url" class="btn btn-inverse">Réinitialiser les filtres</a>
+	</div>
 	<div class="control-group">
 		<label for="input_type" class="control-label">Département</label>
 		<div class="controls">
@@ -510,10 +517,21 @@ END;
 END;
 		self::showCatSelect($type, $subtype, false, true);
 		echo <<<END
-		<a href="$reset_url" class="btn btn-inverse float_right">Reset</a>
 		</div>
 	</div>
-</fieldset>
+END;
+	echo "</fieldset>\n";
+	}
+	
+	public static function showNotificationsListInfos() {
+		$url_notifications = CNavigation::generateUrlToApp('User');
+		$url_form = CNavigation::generateUrlToApp('Dashboard', 'liste', array(
+			'type' => '*',
+			'subtype' => '*',
+			'dep' => '*'));
+		echo <<<END
+		<p>Le filtrage se fait selon vos <a href="$url_notifications#notifications">critères de notifications.</a></p>
+		<a href="$url_form" class="btn btn-info">Afficher plus d'options.</a>
 END;
 	}
 }

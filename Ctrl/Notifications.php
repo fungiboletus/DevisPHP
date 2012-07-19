@@ -4,7 +4,7 @@ class Notifications
 {
 	public function index() {
 		if (!$_SESSION['user']->isAdmin) CTools::hackError();
-		
+
 		if (!isset($_REQUEST['devis'])) CTools::hackError();
 		$devis = R::load('devis', $_REQUEST['devis']);
 		$id = $devis->getId();
@@ -24,17 +24,19 @@ class Notifications
 
 		if (isset($_REQUEST['confirm']))
 		{
-			
+
 			foreach ($users_notifies as $user)
 			{
-				$url_devis = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $id)); 
+				$url_devis = CNavigation::generateUrlToApp('Dashboard', 'view', array('id' => $id));
 				$mail = MMail::newMail()
 					->setSubject(_('Nouvelle demande de devis sur devis-equitable.com'))
 					->setTo(array($user->mail => $devis->name))
 					->setBody(_("Une nouvelle demande de devis correspondant à vos critères de notifications est disponble sur devis-equitable.com.\nVous trouverez plus d'informations à cette adresse : http://www.devis-equitable.com").$url_devis._("\nSachez que vous pouvez modifier vos réglages de notifications à tout moment dans les paramètres de votre profil.\n\nMerci de votre confiance."));
+
+  				MMail::attacherHtml($mail, 'notification_nouvelle_demande');
 				MMail::send($mail);
 			}
-			
+
 			new CMessage(_('Les artisans ont étés notifiés'));
 			CNavigation::redirectToApp('Dashboard', 'liste');
 		}

@@ -41,7 +41,7 @@ class Dashboard
 				new CMessage(_('Demande de devis non disponible.'), 'error');
 				CNavigation::redirectToApp('Dashboard', 'liste');
 			}
-			
+
 			if ($admin && $devis->nb_achats > 0)
 			{
 				echo '<h3>', _('Artisans ayant acheté cette demande de devis'),"</h3>\n<br/>\n";
@@ -54,7 +54,7 @@ class Dashboard
 				!$admin,
 				$devis->etape,
 				!($admin || $achete));
-			
+
 
 		}
 		else
@@ -66,7 +66,7 @@ class Dashboard
 	public function acheter()
 	{
 		if (!isset($_REQUEST['id'])) CTools::hackError();
-	
+
 		$devis = R::load('devis', intval($_REQUEST['id']));
 
 		if (!$devis->getId()) CTools::hackError();
@@ -93,12 +93,12 @@ class Dashboard
 				R::store($devis);
 				new CMessage(_("Votre achat a bien été effectué.\nLe client a reçu un mail présentant votre entreprise.\nNous vous encourageons à prendre contact et à envoyer votre devis dès que possible.\n\nMerci de votre confiance."));
 
-				$company = $_SESSION['user']->company ? $_SESSION['user']->company : $_SESSION['user']->name; 
+				$company = $_SESSION['user']->company ? $_SESSION['user']->company : $_SESSION['user']->name;
 				$website = $_SESSION['user']->website ? ' ('.$_SESSION['user']->website.')' : '';
 				$telephone = $_SESSION['user']->tel ? "\n\nTéléphone: ".$_SESSION['user']->tel : '';
 
 				$body = _("Votre demande de devis sur Devis Équitable a été sélectionnée par l\'entreprise $company$website.");
-			
+
 				$mail = MMail::newMail()
 					->setSubject(_('Un Votre demande de devis a été sélectionnée par l\'artisan «'.$company.'»'))
 					->setTo(array($devis->mail => $devis->nom));
@@ -113,6 +113,7 @@ class Dashboard
 				}
 
 				$mail->setBody($body.$telephone);
+				MMail::attacherHtml($mail, 'devis_selectionne_par_artisan');
 
 				MMail::send($mail);
 			}
@@ -164,7 +165,7 @@ class Dashboard
 
 
 		$query = 'etape '.$etape;
-	
+
 		if (isset($_REQUEST['notifications']) && $_REQUEST['notifications'])
 		{
 
@@ -173,14 +174,14 @@ class Dashboard
 
 			foreach ($deps as &$dep)
 				$dep = Regions::validerID($dep);
-			
+
 			$useless = 0;
 			foreach ($cats as &$cat)
-				Categories::validerIDs($cat, $useless); 
-			
+				Categories::validerIDs($cat, $useless);
+
 			if (!empty($deps))
 				$query .= ' and dep in ('.implode(',',$deps).')';
-			
+
 			if (!empty($cats))
 				$query .= ' and type in ('.implode(',',$cats).')';
 
@@ -200,10 +201,10 @@ class Dashboard
 			if ($type !== '*') $query .= " and type = $type";
 			if ($subtype !== '*') $query .= " and subtype = $subtype";
 			if ($dep !== '*') $query .= " and dep = $dep";
-		
+
 			DevisView::showFormSelectionList($type, $subtype, $dep, false);
 		}
-	
+
 		$date_creation_max = time() - TEMPS_AFFICHAGE_DEVIS_ACHETES;
 
 		// TODO installation

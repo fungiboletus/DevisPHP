@@ -52,13 +52,14 @@ class Registration
 		$inscription->mail = $_POST['mail'];
 		$inscription->token = $token;
 		R::store($inscription);
-	
+
 		$url_inscription = CNavigation::generateUrlToApp('Registration', 'inscription', array('token' => $token));
-		
+
 		$mail = MMail::newMail()
 			->setSubject(_('Inscription sur devis-equitable.com'))
 			->setTo($_POST['mail'])
 			->setBody(_("Le formulaire d'inscription sur devis-equitable.com est disponible à cette adresse : http://www.devis-equitable.com").$url_inscription);
+		MMail::attacherHtml($mail, 'inscription');
 		MMail::send($mail);
 
 		CNavigation::setTitle(_('Demande enregistrée'));
@@ -66,9 +67,9 @@ class Registration
 	}
 
 	public function submit() {
-	
+
 		if (!CNavigation::isValidSubmit(array('nom', 'password', 'token'), $_POST)) CTools::hackError();
-			
+
 		$inscription = R::findOne('inscription', 'token = ?', array($_POST['token']));
 
 		if (!$inscription)
@@ -92,7 +93,7 @@ class Registration
 
 		R::store($user);
 		R::trash($inscription);
-		
+
 		new CMessage(_('Inscription réussie'));
 		$_SESSION['logged'] = true;
 		$_SESSION['user'] = $user;

@@ -57,7 +57,7 @@ class Devis
 			$params = isset($_SESSION['devis_submit']) ? $_SESSION['devis_submit'] : self::$variables;
 			if (isset($_REQUEST['categorie']))
 				$params['type'] = $_REQUEST['categorie'];
-			
+
 			if (isset($_REQUEST['dep']))
 				$params['dep'] = $_REQUEST['dep'];
 
@@ -67,12 +67,12 @@ class Devis
 	}
 
 	public function submit() {
-	
+
 		$devis = null;
 		$modification = false;
 		$ancien_devis = null;
 		$etape_nouveau_devis = 0;
-		
+
 		if (isset($_SESSION['logged']) && isset($_POST['devis_id']))
 		{
 			$devis = R::load('devis', intval($_POST['devis_id']));
@@ -92,8 +92,9 @@ class Devis
 							->setSubject(_('Votre demande de devis a été validée sur devis-equitable.com'))
 							->setTo(array($devis->mail => $devis->nom))
 							->setBody(_("Votre demande de devis a été validée par les administrateurs de Devis Equitable.\nNous allons sélectionner pour vous 3 artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
+	  					MMail::attacherHtml($mail, 'demande_validee');
 						MMail::send($mail);
-				
+
 						$url = CNavigation::generateUrlToApp('Notifications', null, array('devis' => $devis->getID()));
 						new CMessage('<a href="'.$url.'"><h3>'._('Envoyer les notifications aux artisans.').'</h3></a>', 'info');
 						break;
@@ -128,7 +129,7 @@ class Devis
 		if (CNavigation::isValidSubmit(array('type', 'nom','mail', 'tel'), $_POST))
 		{
 			$values = array_merge(self::$variables, $_POST);
-			
+
 			if (!filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL))
 			{
 				new CMessage(_('Veuillez indiquer une adresse mail correcte.'), 'error');
@@ -180,9 +181,9 @@ class Devis
 			else
 			{
 				new CMessage(_('Votre demande de devis a bien été enregistrée. Vous allez recevoir un mail de confirmation'));
-			
+
 				$_SESSION['enregistrement_ok'] = true;
-				
+
 				// On enregistre les variables de contacts pour les devis suivants (héhé)
 				$_SESSION['devis_submit'] = array_merge(self::$variables, array(
 					'nom' => $values['nom'],
@@ -195,7 +196,7 @@ class Devis
 					->setSubject(_('Devis en attente de validation par un administrateur.'))
   					->setTo(array($values['mail'] => $values['nom']))
   					->setBody(_("Bonjour,\n\nvotre demande de devis a bien été prise en compte.\nUn administrateur va prendre contact avec vous dans les plus brefs délais afin de valider votre demande puis sélectionner pour vous trois artisans de qualité qui vous communiqueront un devis gratuit dans les plus brefs délais.\n\nMerci de votre confiance."));
-					//->addPart(_('Votre demande de devis a bien été prise en compte par notre application.'), 'text/html');
+  				MMail::attacherHtml($mail, 'devis_attente_admin');
 
 				MMail::send($mail);
 
@@ -203,6 +204,7 @@ class Devis
 					->setSubject(_('Nouvelle demande de devis'))
   					->setTo($GLOBALS['mail_admin'])
   					->setBody(_('Une nouvelle demande de devis a été envoyée'));
+  				MMail::attacherHtml($mail, 'nouvelle_demande_devis');
 
 				MMail::send($mail);
 
@@ -210,7 +212,7 @@ class Devis
 			}
 
 		}
-		else 
+		else
 		{
 			CTools::hackError();
 		}

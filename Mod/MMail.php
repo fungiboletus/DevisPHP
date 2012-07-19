@@ -36,6 +36,13 @@ class MMail
 		$mail->setFrom($GLOBALS['mail_from']);
 		self::$_mmail_mailer->send($mail);
 	}
+
+	public static function attacherHtml($mail, $fichier)
+	{
+		$path = "View/Mails/$fichier.html";
+		if (file_exists($path))
+			$mail->addPart(file_get_contents($path), 'text/html');
+	}
 }
 
 ?>

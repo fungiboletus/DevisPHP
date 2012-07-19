@@ -14,7 +14,7 @@ class Categories {
 			'Construction garage',
 			'Construction maison',
 			'Construction speciale ( bureaux, immeuble, hotel etc …)'
-		)),
+		), 'blabla'),
 		array('Maçonnerie', array(
 			'Fondation',
 			'Démolition',
@@ -255,9 +255,9 @@ class Categories {
 
 	public static function validerIDs(&$id_a, &$id_b) {
 		$c_liste = count(self::$liste);
-		$id_a = $id_a < 0 ? 0 : ($id_a >= $c_liste ? 0 : intval($id_a));	
+		$id_a = $id_a < 0 ? 0 : ($id_a >= $c_liste ? 0 : intval($id_a));
 		$c_liste = count(self::$liste[$id_a][1]);
-		$id_b = $id_b < 0 ? -1 : ($id_b >= $c_liste ? 0 : intval($id_b));	
+		$id_b = $id_b < 0 ? -1 : ($id_b >= $c_liste ? 0 : intval($id_b));
 	}
 }
 

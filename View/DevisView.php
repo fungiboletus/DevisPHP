@@ -1,17 +1,17 @@
 <?php
 class DevisView {
-	
+
 	const texte_categorie = 'Pas de sous-catégorie';
 
 	public static function showSousCatSelect($categorie = array(), $selected_id = null, $all_allowed = false) {
 
 		if ($all_allowed)
 		{
-			$selected = $selected_id === '*' ? ' selected' : ''; 
+			$selected = $selected_id === '*' ? ' selected' : '';
 			echo "\t\t\t\t\t<option value=\"*\"$selected>Toutes</option>\n";
 		}
 
-		$selected = $selected_id === -1 ? ' selected' : ''; 
+		$selected = $selected_id === -1 ? ' selected' : '';
 		echo '<option value="-1"',$selected,'>',self::texte_categorie,'</option>';
 
 			foreach ($categorie as $id => $sc) {
@@ -30,9 +30,9 @@ class DevisView {
 
 		$selected_id = $a_selected_id === '*' ? -1 : $selected_id;
 		$sub_selected_id = $a_sub_selected_id === '*' ? '*' : $sub_selected_id;
-		
+
 		$disabled = $adisabled ? ' disabled' : '';
-		
+
 		if ($adisabled)
 		{
 			$c = Categories::$liste[$selected_id];
@@ -45,7 +45,7 @@ class DevisView {
 			echo "\t\t\t<select name=\"type\" id=\"input_type\" class=\"span4\" required$disabled>\n";
 			if ($all_allowed)
 			{
-				$selected = $a_selected_id === '*' ? ' selected' : ''; 
+				$selected = $a_selected_id === '*' ? ' selected' : '';
 				echo "\t\t\t\t\t<option value=\"*\"$selected>Toutes</option>\n";
 			}
 
@@ -61,7 +61,7 @@ class DevisView {
 				echo "\t\t\t\t<option value=\"$id\"$selected>$hc</option>\n";
 			}
 			echo "\t\t\t</select>\n";
-			
+
 			echo "\t\t\t<select name=\"subtype\" id=\"input_subtype\" class=\"span4\"$disabled>\n";
 			self::showSousCatSelect(is_null($first) ? array() : $first, $sub_selected_id, $all_allowed);
 			echo "\t\t\t</select>\n";
@@ -78,7 +78,7 @@ class DevisView {
 			echo "\t\t\t<select name=\"dep\" id=\"input_dep\" class=\"span4\"$disabled>\n";
 			if ($all_allowed)
 			{
-				$selected = $a_id_dep === '*' ? ' selected' : ''; 
+				$selected = $a_id_dep === '*' ? ' selected' : '';
 				echo "\t\t\t\t\t<option value=\"*\"$selected>Tous</option>\n";
 			}
 		}
@@ -91,7 +91,7 @@ class DevisView {
 
 			foreach ($departements as $id => $dep) {
 				$hd = htmlspecialchars($dep);
-				$id_display = $id === 201 ? '2A' : ($id === 202 ? '2B' : ($id < 10 ? '0'.$id : $id)); 
+				$id_display = $id === 201 ? '2A' : ($id === 202 ? '2B' : ($id < 10 ? '0'.$id : $id));
 				if ($adisabled && $id_dep === $id)
 				{
 					echo "\t\t\t<input type=\"text\" name=\"dep\" id=\"input_dep\" class=\"span4\" value=\"$id_display - $hd\"$disabled/>\n";
@@ -119,9 +119,9 @@ class DevisView {
 		if ($devis_id) {
 			echo "\t<input type=\"hidden\" name=\"devis_id\" value=\"",intval($devis_id),"\"/>\n";
 		}
-		
-		$legend_projet = $mode !== 'nouveau' ? _('Projet') : _('Votre projet'); 
-		$legend_coordonnees = $mode !== 'nouveau' ? _('Coordonnées') : _('Vos coordonnées'); 
+
+		$legend_projet = $mode !== 'nouveau' ? _('Projet') : _('Votre projet');
+		$legend_coordonnees = $mode !== 'nouveau' ? _('Coordonnées') : _('Vos coordonnées');
 
 		echo <<<END
 <fieldset>
@@ -176,7 +176,7 @@ END;
 		echo <<<END
 		</div>
 	</div>
-	
+
 	<div class="control-group">
 		<label for="input_budget" class="control-label">Budget</label>
 		<div class="controls">
@@ -193,7 +193,7 @@ END;
               </div>
 		</div>
 	</div>
-	
+
 	<div class="control-group">
 		<label for="input_financement" class="control-label">Financement</label>
 		<div class="controls">
@@ -217,7 +217,7 @@ END;
 		echo <<<END
 		</div>
 	</div>
-	
+
 	<div class="control-group">
 		<label for="input_objectif" class="control-label">Objectif de la demande</label>
 		<div class="controls">
@@ -285,7 +285,7 @@ END;
 if ($masquer_infos)
 {
 	echo <<<END
-	<div class="alert alert-info">Vous devez acheter la demande de devis pour obtenir les coordonnées <em>complètes</em>.</div> 
+	<div class="alert alert-info">Vous devez acheter la demande de devis pour obtenir les coordonnées <em>complètes</em>.</div>
 END;
 }
 else
@@ -309,7 +309,7 @@ END;
 			htmlspecialchars($values['nom']),
 			rawurlencode(' <'.$values['mail'].'>'),"\" class=\"btn btn-inverse\">Envoyer un email</a>\n";
 		}
-		
+
 		echo <<<END
 			</div>
 			<p class="help-block">Veuillez entrer une adresse email valide. Elle sera utilisée pour vous proposer les offres de devis.</p>
@@ -367,7 +367,7 @@ END;
 	<a href="$url" class="btn btn-primary btn-large">Nouvelle demande de devis</a>
 END;
 	}
-	
+
 	public static function showList($devis, $montrer_achetes = true)
 	{
 		if ($devis)
@@ -394,17 +394,18 @@ END;
 				$c_achete = $montrer_achetes && in_array($d, $_SESSION['user']->sharedDevis);
 				$achete =  $c_achete ? 'achete ' : '';
 
+				$a_begin = "<a href=\"$url\">";
+				$a_end = '</a>';
+				$complet = '';
+
 				if (!$_SESSION['user']->isAdmin && $d['nb_achats'] >= NB_ACHATS_MAX)
 				{
 					$complet = 'complet';
-					$a_begin = '';
-					$a_end = '';
-				}
-				else
-				{
-					$a_begin = "<a href=\"$url\">";
-					$a_end = '</a>';
-					$complet = '';
+					if (!$c_achete)
+					{
+						$a_begin = '';
+						$a_end = '';
+					}
 				}
 
 				$hdate = AbstractView::formateDate($d['date_creation']);
@@ -414,13 +415,13 @@ END;
 				$hcat = htmlspecialchars($c[0]).' <br/> '.htmlspecialchars($sc);
 				$hsujet = wordwrap(htmlspecialchars($d['sujet']),30, "<br/>", true);
 				$hbudget = htmlspecialchars($d['budget']);
-				
+
 				echo <<<END
 	<tr class="$achete$complet">
 		<td>$a_begin
 			<span class="badge badge-info">$id</span>
 END;
-				if ($c_achete) echo '&nbsp;<span class="badge badge-warning">Acheté</span>';	
+				if ($c_achete) echo '&nbsp;<span class="badge badge-warning">Acheté</span>';
 				if ($_SESSION['user']->isAdmin)
 				{
 					if ($d['nb_achats']) echo '&nbsp;<span class="badge badge-warning">',$d['nb_achats'],' achat',$d['nb_achats'] > 1 ? 's' : '','</span>';
@@ -464,17 +465,17 @@ END;
 			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'validees')),
 			'" class="btn btn-large btn-inverse"',$etape === '= 1' ? 'disabled': '',
 			'><i class="icon-white icon-ok"></i> Validés</a>', "\n\t";
-		
+
 		echo '<a href="',
 			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'validation')),
 			'" class="btn btn-large btn-inverse"',$etape === '= 0' ? 'disabled': '',
 			'><i class="icon-white icon-inbox"></i> À valider</a>', "\n\t";
-		
+
 		echo '<a href="',
 			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'historique')),
 			'" class="btn btn-large btn-inverse"',$etape === '< -1' ? 'disabled': '',
 			'><i class="icon-white icon-list-alt"></i> Historique</a>', "\n\t";
-		
+
 		echo '<a href="',
 			CNavigation::generateMergedUrl('Dashboard', 'liste', array('etape' => 'poubelle')),
 			'" class="btn btn-large btn-inverse"',$etape === '= -1' ? 'disabled': '',
@@ -522,7 +523,7 @@ END;
 END;
 	echo "</fieldset>\n";
 	}
-	
+
 	public static function showNotificationsListInfos() {
 		$url_notifications = CNavigation::generateUrlToApp('User');
 		$url_form = CNavigation::generateUrlToApp('Dashboard', 'liste', array(
